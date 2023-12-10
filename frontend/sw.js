@@ -1,4 +1,4 @@
-const cacheName = "cache1"; // Change value to force update
+const cacheName = "cache2"; // Change value to force update
 
 self.addEventListener("install", event => {
 	// Kick out the old service worker
@@ -44,6 +44,14 @@ self.addEventListener("install", event => {
 				"safari-pinned-tab.svg", // Favicon, Safari pinned tab
 				"share.jpg", // Social media sharing
 				"style.css", // Main CSS file
+				"static/css/main.f855e6bc.css",
+				"static/css/main.f855e6bc.css.map",
+				"static/js/787.3d5a92c2.chunk.js.map",
+				"static/js/787.3d5a92c2.chunk.js",
+				"static/js/main.3f0ee714.js",
+				"static/js/main.3f0ee714.js.LICENSE.txt",
+				"static/js/main.3f0ee714.js.map",
+				"static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg"
 			]);
 		})
 	);

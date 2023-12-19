@@ -5,15 +5,8 @@ import './wordCheck.scss';
 import { useSelector, useDispatch } from 'react-redux'
 import { decrement, increment } from '../slices/trainingSlice'
 
-
-
-function WordCheckComponent() {
-  const [word, setWord] = useState("Example Word");
-  const [definition, setDefinition] = useState("Example Definition");
-  const count = useSelector((state) => state.training.value)
+function TrainingSession(wordsToTrain) {
   const dispatch = useDispatch()
-
-
 
   const onClick = () => {
     alert("I was clicked")
@@ -43,4 +36,4 @@ function WordCheckComponent() {
   );
 }
 
-export default WordCheckComponent;
+export default TrainingSession;

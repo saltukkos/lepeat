@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import './card.scss';
 
-function Card({ textToShow, onClick }) {
+type CardProps = {
+    textToShow: string;
+    onClick: () => void
+};
+function Card({textToShow, onClick} : CardProps) {
     return (   
         <div className="card" onClick={onClick}>
             {textToShow}

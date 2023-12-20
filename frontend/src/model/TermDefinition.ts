@@ -1,3 +1,5 @@
+import {AttributeDefinition} from "./AttributeDefinition";
+
 export interface TermDefinition {
-    attributes: string[];
+    attributes: AttributeDefinition[];
 }

@@ -2,10 +2,10 @@ import {TermDefinition} from "./TermDefinition";
 import {AttributeDefinition} from "./AttributeDefinition";
 
 export interface TrainingDefinition{
-    configuration: Map<TermDefinition, TermTrainingDefinition>
+    configuration: Map<TermDefinition, TermTrainingRule>;
 }
 
-export interface TermTrainingDefinition {
+export interface TermTrainingRule {
     attributesToShow: AttributeDefinition[];
     attributesToGuess: AttributeDefinition[];
 }

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './card.scss';
 
 type CardProps = {
@@ -8,6 +8,11 @@ type CardProps = {
 
 function Card({question, answer}: CardProps) {
     const [mode, setMode] = useState<"QUESTION" | "ANSWER">("QUESTION");
+
+    useEffect(() => {
+        setMode("QUESTION")
+    }, [question, answer]);
+
 
     const onClick = () => {
         setMode(mode === "QUESTION" ? "ANSWER" : "QUESTION");

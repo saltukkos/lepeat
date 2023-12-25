@@ -143,5 +143,6 @@ export const germanProfile: LepeatProfile = {
     termDefinitions: [germanNounDefinition, germanVerbDefinition],
     trainingDefinitions: [translationsTrainingDefinition, articleTrainingDefinition],
     terms: [noun1, noun2, noun3, noun4, noun5, verb1, verb2, verb3, verb4, verb5],
-    trainingProgresses: new Map<TrainingDefinition, TrainingProgress>()
+    trainingProgresses: new Map<TrainingDefinition, TrainingProgress>(),
+    intervals: [0, 1, 3, 7, 15, 30],
 }

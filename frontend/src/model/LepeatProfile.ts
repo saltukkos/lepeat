@@ -8,5 +8,7 @@ export interface LepeatProfile {
     trainingDefinitions: TrainingDefinition[];
 
     terms: Term[];
-    trainingProgresses: Map<TrainingDefinition, TrainingProgress>
+    trainingProgresses: Map<TrainingDefinition, TrainingProgress>;
+
+    intervals: number[];
 }

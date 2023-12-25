@@ -1,41 +1,13 @@
 import React, {useState} from "react";
 import TrainingSession from "../training/TrainingSession";
 import {articleTrainingDefinition, germanProfile, translationsTrainingDefinition} from "../../model/DefaultModel";
-import {LepeatProfile} from "../../model/LepeatProfile";
-import {TrainingDefinition} from "../../model/TrainingDefinition";
+import {getTermsToTrain} from "../../services/TrainingStarter";
 
 enum RenderedPage {
     HOME,
     TRAINING_TRANSLATIONS,
     TRAINING_ARTICLES,
     ADD_WORDS,
-}
-
-function getTermsToTrain(profile: LepeatProfile, trainingDefinition: TrainingDefinition) {
-    let trainingProgress = profile.trainingProgresses.get(trainingDefinition);
-    if (!trainingProgress) {
-        trainingProgress = { progress: new Map() };
-        profile.trainingProgresses.set(trainingDefinition, trainingProgress);
-    }
-
-    let progressForCurrentTraining = trainingProgress.progress;
-
-    return profile.terms
-        .filter(term => trainingDefinition.configuration.has(term.termDefinition))
-        .map(value => {
-            let progress = progressForCurrentTraining.get(value);
-            if (!progress) {
-                progress = {
-                    term: value,
-                    iterationNumber: 0,
-                    lastTrainingDate: undefined
-                };
-
-                progressForCurrentTraining.set(value, progress);
-            }
-            return progress;
-        })
-        .filter(progress => progress.iterationNumber === 0);
 }
 
 function HomePage() {

@@ -2,6 +2,8 @@ import {AttributeDefinition} from "./AttributeDefinition";
 import {TermDefinition} from "./TermDefinition";
 import {TermTrainingRule, TrainingDefinition} from "./TrainingDefinition";
 import {Term} from "./Term";
+import {TermTrainingProgress, TrainingProgress} from "./TrainingProgress";
+import {LepeatProfile} from "./LepeatProfile";
 
 export const originalWordAttribute: AttributeDefinition = {
     name: "Word",
@@ -137,3 +139,9 @@ export const articleTrainingDefinition: TrainingDefinition = {
     ])
 }
 
+export const germanProfile: LepeatProfile = {
+    termDefinitions: [germanNounDefinition, germanVerbDefinition],
+    trainingDefinitions: [translationsTrainingDefinition, articleTrainingDefinition],
+    terms: [noun1, noun2, noun3, noun4, noun5, verb1, verb2, verb3, verb4, verb5],
+    trainingProgresses: new Map<TrainingDefinition, TrainingProgress>()
+}

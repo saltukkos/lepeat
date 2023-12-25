@@ -15,9 +15,6 @@ interface TrainingSessionProps {
 }
 
 function TrainingSession({trainingDefinition, termTrainingProgress, onHomeButtonClicked}: TrainingSessionProps) {
-  const dispatch = useDispatch();
-  const count = useSelector((state: RootState) => state.trainingSession.value);
-
   const [currentTermIdx, setCurrentTermIdx] = useState(0);
 
   if (currentTermIdx >= termTrainingProgress.length) {
@@ -36,29 +33,23 @@ function TrainingSession({trainingDefinition, termTrainingProgress, onHomeButton
   let question = currentRule.attributesToShow.map(a => currentTerm.attributeValues.get(a)).join(" ");
   let answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
 
+  const onRightClicked = () => {
+    termTrainingProgress[currentTermIdx].iterationNumber = termTrainingProgress[currentTermIdx].iterationNumber + 1;
+    termTrainingProgress[currentTermIdx].lastTrainingDate =  new Date(Date.now());
+    setCurrentTermIdx((currentValue) => currentValue + 1)
+  }
+  const onWrongClicked = () => {
+      termTrainingProgress[currentTermIdx].iterationNumber = 0;
+      termTrainingProgress[currentTermIdx].lastTrainingDate =  new Date(Date.now());
+      setCurrentTermIdx((currentValue) => currentValue + 1)
+  }
+
   return (
       <Container className="page">
-          <div>
-              Question:
-          </div>
           <Card question={question} answer={answer}/>
-          <span>{count}</span>
           <button onClick={onHomeButtonClicked}> Home</button>
-
-
-          <button
-              aria-label="Increment value"
-              onClick={() => dispatch(increment())}
-          >
-              Increment
-          </button>
-          <button
-              aria-label="Decrement value"
-              onClick={() => dispatch(decrement())}
-          >
-              Decrement
-          </button>
-
+          <button onClick={onRightClicked}>Right</button>
+          <button onClick={onWrongClicked}>Wrong</button>
       </Container>
   );
 }

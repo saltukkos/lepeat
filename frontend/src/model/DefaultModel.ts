@@ -3,19 +3,19 @@ import {TermDefinition} from "./TermDefinition";
 import {TermTrainingRule, TrainingDefinition} from "./TrainingDefinition";
 import {Term} from "./Term";
 
-const originalWordAttribute: AttributeDefinition = {
+export const originalWordAttribute: AttributeDefinition = {
     name: "Word",
 };
 
-const translatedWordAttribute: AttributeDefinition = {
+export const translatedWordAttribute: AttributeDefinition = {
     name: "Translation",
 };
 
-const germanArticleAttribute: AttributeDefinition = {
+export const germanArticleAttribute: AttributeDefinition = {
     name: "Article",
 }
 
-const germanNounDefinition: TermDefinition = {
+export const germanNounDefinition: TermDefinition = {
     attributes: [
         germanArticleAttribute,
         originalWordAttribute,
@@ -23,14 +23,14 @@ const germanNounDefinition: TermDefinition = {
     ]
 }
 
-const germanVerbDefinition: TermDefinition = {
+export const germanVerbDefinition: TermDefinition = {
     attributes: [
         originalWordAttribute,
         translatedWordAttribute,
     ]
 }
 
-const noun1: Term = {
+export const noun1: Term = {
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -39,7 +39,7 @@ const noun1: Term = {
     ]),
 }
 
-const noun2: Term = {
+export const noun2: Term = {
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -48,7 +48,7 @@ const noun2: Term = {
     ]),
 }
 
-const noun3: Term = {
+export const noun3: Term = {
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "das"],
@@ -57,7 +57,7 @@ const noun3: Term = {
     ]),
 }
 
-const noun4: Term = {
+export const noun4: Term = {
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -66,7 +66,7 @@ const noun4: Term = {
     ]),
 }
 
-const noun5: Term = {
+export const noun5: Term = {
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -75,7 +75,7 @@ const noun5: Term = {
     ]),
 }
 
-const verb1: Term = {
+export const verb1: Term = {
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "laufen"],
@@ -83,7 +83,7 @@ const verb1: Term = {
     ]),
 }
 
-const verb2: Term = {
+export const verb2: Term = {
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "lesen"],
@@ -91,7 +91,7 @@ const verb2: Term = {
     ]),
 }
 
-const verb3: Term = {
+export const verb3: Term = {
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "schreiben"],
@@ -99,7 +99,7 @@ const verb3: Term = {
     ]),
 }
 
-const verb4: Term = {
+export const verb4: Term = {
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sprechen"],
@@ -107,7 +107,7 @@ const verb4: Term = {
     ]),
 }
 
-const verb5: Term = {
+export const verb5: Term = {
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sehen"],
@@ -115,7 +115,7 @@ const verb5: Term = {
     ]),
 }
 
-const translationsTrainingDefinition: TrainingDefinition = {
+export const translationsTrainingDefinition: TrainingDefinition = {
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [germanArticleAttribute, originalWordAttribute],
@@ -128,7 +128,7 @@ const translationsTrainingDefinition: TrainingDefinition = {
     ])
 }
 
-const articleTrainingDefinition: TrainingDefinition = {
+export const articleTrainingDefinition: TrainingDefinition = {
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [translatedWordAttribute, originalWordAttribute],

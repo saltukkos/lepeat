@@ -7,5 +7,5 @@ export interface TrainingProgress{
 export interface TermTrainingProgress {
   term: Term;
   iterationNumber: number;
-  lastTrainingDate: Date;
+  lastTrainingDate?: Date; // TODO fix nullable
 }

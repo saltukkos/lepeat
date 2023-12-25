@@ -1,14 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 import './card.scss';
 
 type CardProps = {
-    textToShow: string;
-    onClick: () => void
+    question: string;
+    answer: string;
 };
-function Card({textToShow, onClick} : CardProps) {
-    return (   
+
+function Card({question, answer}: CardProps) {
+    const [mode, setMode] = useState<"QUESTION" | "ANSWER">("QUESTION");
+
+    const onClick = () => {
+        setMode(mode === "QUESTION" ? "ANSWER" : "QUESTION");
+    }
+
+    return (
         <div className="card" onClick={onClick}>
-            {textToShow}
+            <div>
+                {mode}
+            </div>
+            {mode === "QUESTION" ? question : answer}
         </div>
     )
 }

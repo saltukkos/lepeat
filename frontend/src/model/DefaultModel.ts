@@ -144,26 +144,13 @@ export const articleTrainingDefinition: TrainingDefinition = {
 const translationTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>(
         [
-            [noun1, {term: noun1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
-            [noun2, {term: noun2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
-            [noun3, {term: noun3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
-            [noun4, {term: noun4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
-            [noun5, {term: noun5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}],
-            [verb1, {term: verb1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
-            [verb2, {term: verb2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
-            [verb3, {term: verb3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
-            [verb4, {term: verb4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
-            [verb5, {term: verb5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}]
+            [verb5, {term: verb5, iterationNumber: 1, lastTrainingDate: Date.now()}]
         ])
 }
 
 const articlesTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>([
-        [noun1, {term: noun1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
-        [noun2, {term: noun2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
-        [noun3, {term: noun3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
-        [noun4, {term: noun4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
-        [noun5, {term: noun5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}],
+        [noun5, {term: noun5, iterationNumber: 1, lastTrainingDate: Date.now()}],
     ])
 }
 

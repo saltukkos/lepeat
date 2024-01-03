@@ -48,7 +48,7 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
             interval *= 24 * 60 * 60 * 1000; //interpret as days in normal mode
         }
 
-        let nextTrainDateForTerm = lastTrainingDate.getTime() + interval;
+        let nextTrainDateForTerm = lastTrainingDate + interval;
         return nextTrainDateForTerm < currentTime;
     }
 }

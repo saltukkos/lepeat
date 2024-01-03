@@ -1,70 +1,78 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TrainingSession from "../training/TrainingSession";
-import {articleTrainingDefinition, germanProfile, translationsTrainingDefinition} from "../../model/DefaultModel";
+import {germanProfile} from "../../model/DefaultModel";
 import {getTermsToTrain} from "../../services/TrainingStarter";
 import Statistics from "../statistics/debug/Statistics";
-
-enum RenderedPage {
-    HOME,
-    TRAINING_TRANSLATIONS,
-    TRAINING_ARTICLES,
-    ADD_WORDS,
-    STATISTICS_DEBUG
-}
+import {LepeatProfile} from "../../model/LepeatProfile";
+import {TrainingDefinition} from "../../model/TrainingDefinition";
+import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
 
 function HomePage() {
-    const [renderState, setRenderState] = useState<RenderedPage>(RenderedPage.HOME);
+    const [renderState, setRenderState] = useState<string>("HOME");
+    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
 
-    const translationsTrainingClicked = () => {
-        setRenderState(RenderedPage.TRAINING_TRANSLATIONS)
-    }
+    useEffect(() => {
+        // Load profile from local storage during initial render
+        const loadedData = localStorage.getItem('profile');
+        if (loadedData) {
+            setProfile(deserializeProfile(loadedData));
+        }
+    }, []);
 
-    const articlesTrainingClicked = () => {
-        setRenderState(RenderedPage.TRAINING_ARTICLES)
-    }
-
-    const addWordsClicked = () => {
-        setRenderState(RenderedPage.ADD_WORDS)
-    }
-
-    const homeClicked = () => {
-        setRenderState(RenderedPage.HOME)
-    }
-
-    const statisticsDebugClicked = () => {
-        setRenderState(RenderedPage.STATISTICS_DEBUG)
-    }
 
     let render = <></>
 
-    if (renderState === RenderedPage.TRAINING_TRANSLATIONS) {
-        render = (
-            <TrainingSession onHomeButtonClicked={homeClicked} trainingDefinition={translationsTrainingDefinition}
-                             termTrainingProgress={getTermsToTrain(germanProfile, translationsTrainingDefinition)}/>
-        )
-    } else if (renderState === RenderedPage.TRAINING_ARTICLES) {
-        render = (
-            <TrainingSession onHomeButtonClicked={homeClicked} trainingDefinition={articleTrainingDefinition}
-                             termTrainingProgress={getTermsToTrain(germanProfile, articleTrainingDefinition)}/>
-        )
-    } else if (renderState === RenderedPage.ADD_WORDS) {
+    if (renderState.startsWith("TRAINING:")) {
+        const trainingName = renderState.substring("TRAINING:".length);
+        const training = profile.trainingDefinitions.find(value => value.name === trainingName);
+        if (training) {
+            render = (
+                <TrainingSession onHomeButtonClicked={() => setRenderState("HOME")} trainingDefinition={training}
+                                 termTrainingProgress={getTermsToTrain(profile, training)}/>
+            )
+        } else {
+            render = (
+                <div>
+                    No training with name "{trainingName}" is found
+                </div>
+            );
+        }
+    } else if (renderState === "ADD_WORDS") {
         render = <div> Here will be page for adding words</div>
-    } else if (renderState === RenderedPage.STATISTICS_DEBUG) {
+    } else if (renderState === "STATISTICS_DEBUG") {
         render = (
-            <Statistics terms={germanProfile.terms} trainingProgresses={germanProfile.trainingProgresses} />
+            <Statistics terms={profile.terms} trainingProgresses={profile.trainingProgresses} />
         )
-    } else if (renderState === RenderedPage.HOME) {
+    } else if (renderState === "HOME") {
         render = (
             <div>
                 This is home page.
                 <br/>
-                <button onClick={translationsTrainingClicked}>Go to translations training</button>
+
+                {profile.trainingDefinitions.map((training: TrainingDefinition) => (
+                    <div>
+                        <button onClick={() => setRenderState(`TRAINING:${training.name}`)}>
+                            Start {training.name}
+                        </button>
+                        <br/>
+                    </div>
+                ))}
+
+                <button onClick={() => setRenderState("ADD_WORDS")}>Add new words</button>
                 <br/>
-                <button onClick={articlesTrainingClicked}>Go to articles training</button>
+
+                <button onClick={() => setRenderState("STATISTICS_DEBUG")}>Statistics debug</button>
                 <br/>
-                <button onClick={addWordsClicked}>Add new words</button>
+
+                <button onClick={() => localStorage.setItem('profile', serializeProfile(profile))}>
+                    Save data to storage
+                </button>
                 <br/>
-                <button onClick={statisticsDebugClicked}>Statistics debug</button>
+
+                <button onClick={() => localStorage.removeItem('profile')}>
+                    Clear storage
+                </button>
+                <br/>
             </div>
         )
     } else {

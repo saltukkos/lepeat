@@ -32,12 +32,12 @@ function TrainingSession({trainingDefinition, termTrainingProgress, onHomeButton
 
     const onRightClicked = () => {
         termTrainingProgress[currentTermIdx].iterationNumber = termTrainingProgress[currentTermIdx].iterationNumber + 1;
-        termTrainingProgress[currentTermIdx].lastTrainingDate = new Date(Date.now());
+        termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
     const onWrongClicked = () => {
         termTrainingProgress[currentTermIdx].iterationNumber = 0;
-        termTrainingProgress[currentTermIdx].lastTrainingDate = new Date(Date.now());
+        termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
 

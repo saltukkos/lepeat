@@ -32,7 +32,8 @@ function Statistics({terms, trainingProgresses}: StatisticsProps) {
             let termProgress = trainingProgress.progress.get(term);
 
             if (!!termProgress) {
-                let progressInfo = `${termProgress.iterationNumber}; ${termProgress.lastTrainingDate}`
+                let lastTrainingDate = termProgress.lastTrainingDate;
+                let progressInfo = `${termProgress.iterationNumber}; ${lastTrainingDate ? new Date(lastTrainingDate) : undefined}`
                 termRow.push(progressInfo);
             } else {
                 termRow.push("--"); //empty value

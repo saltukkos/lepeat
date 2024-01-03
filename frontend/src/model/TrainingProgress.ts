@@ -7,5 +7,5 @@ export interface TrainingProgress{
 export interface TermTrainingProgress {
   term: Term;
   iterationNumber: number;
-  lastTrainingDate?: Date; // note: it can be undefined if the user hasn't trained this term yet
+  lastTrainingDate?: number; // note: it can be undefined if the user hasn't trained this term yet
 }

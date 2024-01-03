@@ -118,6 +118,7 @@ export const verb5: Term = {
 }
 
 export const translationsTrainingDefinition: TrainingDefinition = {
+    name: "Translation training",
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [germanArticleAttribute, originalWordAttribute],
@@ -131,6 +132,7 @@ export const translationsTrainingDefinition: TrainingDefinition = {
 }
 
 export const articleTrainingDefinition: TrainingDefinition = {
+    name: "Article training",
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [translatedWordAttribute, originalWordAttribute],

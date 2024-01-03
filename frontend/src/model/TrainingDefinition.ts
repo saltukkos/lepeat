@@ -1,7 +1,8 @@
 import {TermDefinition} from "./TermDefinition";
 import {AttributeDefinition} from "./AttributeDefinition";
 
-export interface TrainingDefinition{
+export interface TrainingDefinition {
+    name: string,
     configuration: Map<TermDefinition, TermTrainingRule>;
 }
 

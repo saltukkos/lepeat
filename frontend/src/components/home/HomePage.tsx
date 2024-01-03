@@ -2,12 +2,14 @@ import React, {useState} from "react";
 import TrainingSession from "../training/TrainingSession";
 import {articleTrainingDefinition, germanProfile, translationsTrainingDefinition} from "../../model/DefaultModel";
 import {getTermsToTrain} from "../../services/TrainingStarter";
+import Statistics from "../statistics/debug/Statistics";
 
 enum RenderedPage {
     HOME,
     TRAINING_TRANSLATIONS,
     TRAINING_ARTICLES,
     ADD_WORDS,
+    STATISTICS_DEBUG
 }
 
 function HomePage() {
@@ -29,6 +31,10 @@ function HomePage() {
         setRenderState(RenderedPage.HOME)
     }
 
+    const statisticsDebugClicked = () => {
+        setRenderState(RenderedPage.STATISTICS_DEBUG)
+    }
+
     let render = <></>
 
     if (renderState === RenderedPage.TRAINING_TRANSLATIONS) {
@@ -43,6 +49,10 @@ function HomePage() {
         )
     } else if (renderState === RenderedPage.ADD_WORDS) {
         render = <div> Here will be page for adding words</div>
+    } else if (renderState === RenderedPage.STATISTICS_DEBUG) {
+        render = (
+            <Statistics terms={germanProfile.terms} trainingProgresses={germanProfile.trainingProgresses} />
+        )
     } else if (renderState === RenderedPage.HOME) {
         render = (
             <div>
@@ -53,6 +63,8 @@ function HomePage() {
                 <button onClick={articlesTrainingClicked}>Go to articles training</button>
                 <br/>
                 <button onClick={addWordsClicked}>Add new words</button>
+                <br/>
+                <button onClick={statisticsDebugClicked}>Statistics debug</button>
             </div>
         )
     } else {

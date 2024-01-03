@@ -141,10 +141,39 @@ export const articleTrainingDefinition: TrainingDefinition = {
     ])
 }
 
+const translationTrainingProgress: TrainingProgress = {
+    progress: new Map<Term, TermTrainingProgress>(
+        [
+            [noun1, {term: noun1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
+            [noun2, {term: noun2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
+            [noun3, {term: noun3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
+            [noun4, {term: noun4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
+            [noun5, {term: noun5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}],
+            [verb1, {term: verb1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
+            [verb2, {term: verb2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
+            [verb3, {term: verb3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
+            [verb4, {term: verb4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
+            [verb5, {term: verb5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}]
+        ])
+}
+
+const articlesTrainingProgress: TrainingProgress = {
+    progress: new Map<Term, TermTrainingProgress>([
+        [noun1, {term: noun1, iterationNumber: 1, lastTrainingDate: new Date(Date.now())}],
+        [noun2, {term: noun2, iterationNumber: 2, lastTrainingDate: new Date(Date.now())}],
+        [noun3, {term: noun3, iterationNumber: 3, lastTrainingDate: new Date(Date.now())}],
+        [noun4, {term: noun4, iterationNumber: 4, lastTrainingDate: new Date(Date.now())}],
+        [noun5, {term: noun5, iterationNumber: 5, lastTrainingDate: new Date(Date.now())}],
+    ])
+}
+
 export const germanProfile: LepeatProfile = {
     termDefinitions: [germanNounDefinition, germanVerbDefinition],
     trainingDefinitions: [translationsTrainingDefinition, articleTrainingDefinition],
     terms: [noun1, noun2, noun3, noun4, noun5, verb1, verb2, verb3, verb4, verb5],
-    trainingProgresses: new Map<TrainingDefinition, TrainingProgress>(),
+    trainingProgresses: new Map<TrainingDefinition, TrainingProgress>(
+        [[translationsTrainingDefinition, translationTrainingProgress],
+            [articleTrainingDefinition, articlesTrainingProgress]]
+    ),
     intervals: [0, 1, 3, 7, 15, 30],
 }

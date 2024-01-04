@@ -41,7 +41,9 @@ function HomePage() {
         render = <div> Here will be page for adding words</div>
     } else if (renderState === "STATISTICS_DEBUG") {
         render = (
-            <Statistics terms={profile.terms} trainingProgresses={profile.trainingProgresses} />
+            <Statistics terms={profile.terms}
+                        trainingProgresses={profile.trainingProgresses}
+                        onHomeClick={() => setRenderState("HOME")} />
         )
     } else if (renderState === "HOME") {
         render = (

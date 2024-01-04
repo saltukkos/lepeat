@@ -5,11 +5,12 @@ import {TrainingProgress} from "../../../model/TrainingProgress";
 
 interface StatisticsProps {
     terms: Term[],
-    trainingProgresses: Map<TrainingDefinition, TrainingProgress>
+    trainingProgresses: Map<TrainingDefinition, TrainingProgress>,
+    onHomeClick: () => void
 
 }
 
-function Statistics({terms, trainingProgresses}: StatisticsProps) {
+function Statistics({terms, trainingProgresses, onHomeClick}: StatisticsProps) {
     let tableData: string[][] = [];
 
     let firstLine: string[] = [];
@@ -51,7 +52,11 @@ function Statistics({terms, trainingProgresses}: StatisticsProps) {
     });
 
 
-    return <table>{table}</table>
+    return (
+        <div>
+            <table>{table}</table>
+            <button onClick={onHomeClick}>Home</button>
+        </div>);
 }
 
 export default Statistics;

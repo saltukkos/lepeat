@@ -6,6 +6,7 @@ import Statistics from "../statistics/debug/Statistics";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
+import ProfileImportExport from "../dataExchange/ProfileImportExport";
 
 function HomePage() {
     const [renderState, setRenderState] = useState<string>("HOME");
@@ -15,7 +16,11 @@ function HomePage() {
         // Load profile from local storage during initial render
         const loadedData = localStorage.getItem('profile');
         if (loadedData) {
-            setProfile(deserializeProfile(loadedData));
+            let deserializedProfile = deserializeProfile(loadedData);
+            if (deserializedProfile)
+                setProfile(deserializedProfile);
+            else
+                alert("Can't deserialize profile")
         }
     }, []);
 
@@ -45,6 +50,10 @@ function HomePage() {
                         trainingProgresses={profile.trainingProgresses}
                         onHomeClick={() => setRenderState("HOME")} />
         )
+    } else if (renderState === "IMPORT_EXPORTS_STATE") {
+        render = (
+            <ProfileImportExport onHomeButtonClicked={() => setRenderState("HOME")} profile={profile} setProfile={pr => setProfile(pr)}/>
+        )
     } else if (renderState === "HOME") {
         render = (
             <div>
@@ -61,6 +70,9 @@ function HomePage() {
                 ))}
 
                 <button onClick={() => setRenderState("ADD_WORDS")}>Add new words</button>
+                <br/>
+
+                <button onClick={() => setRenderState("IMPORT_EXPORTS_STATE")}>Import or export state</button>
                 <br/>
 
                 <button onClick={() => setRenderState("STATISTICS_DEBUG")}>Statistics debug</button>

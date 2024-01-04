@@ -10,10 +10,15 @@ export function serializeProfile(profile: LepeatProfile) {
     return stringify(profile, replacer);
 }
 
-export function deserializeProfile(data: string) : LepeatProfile {
+export function deserializeProfile(data: string): LepeatProfile | undefined {
     const reviver = (key: any, value: any) => value && value.dataType === 'Map'
         ? new Map(value.value)
         : value;
 
-    return parse(data, reviver);
+    try {
+        return parse(data, reviver);
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
 }

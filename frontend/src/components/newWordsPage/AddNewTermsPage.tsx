@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useRef, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {TermDefinition} from "../../model/TermDefinition";
 import {Term} from "../../model/Term";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
@@ -33,7 +33,8 @@ function AddNewTermsPage({termDefinitions, onHomeButtonClicked, terms} : AddNewT
         for (let i = 0; i < selectedTermDefinition.attributes.length; i++) {
             newTermAttributesData.set(selectedTermDefinition.attributes[i], inputsData[i]);
         }
-        terms.push({termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData})
+        const maxId = terms.reduce((max, term) => Math.max(max, term.id), 0);
+        terms.push({id: maxId + 1, termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData})
         setInputsData([]);
     }
 

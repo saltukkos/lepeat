@@ -9,6 +9,7 @@ import {deserializeProfile, serializeProfile} from "../../services/ProfileSerial
 import AddNewTermsPage from "../newWordsPage/AddNewTermsPage";
 import ProfileImportExport from "../dataExchange/ProfileImportExport";
 import TermsImportExport from "../dataExchange/TermsImportExport";
+import EditTermsPage from "../editTermsPage/EditTermsPage";
 
 function HomePage() {
     const [renderState, setRenderState] = useState<string>("HOME");
@@ -46,6 +47,10 @@ function HomePage() {
         }
     } else if (renderState === "ADD_WORDS") {
         render = (<AddNewTermsPage termDefinitions={profile.termDefinitions} terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />)
+    } else if (renderState === "EDIT_WORDS") {
+        render = (
+            <EditTermsPage terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />
+        )
     } else if (renderState === "STATISTICS_DEBUG") {
         render = (
             <Statistics terms={profile.terms}
@@ -76,6 +81,9 @@ function HomePage() {
                 ))}
 
                 <button onClick={() => setRenderState("ADD_WORDS")}>Add new words</button>
+                <br/>
+
+                <button onClick={() => setRenderState("EDIT_WORDS")}>Edit words</button>
                 <br/>
 
                 <button onClick={() => setRenderState("IMPORT_EXPORTS_STATE")}>Import or export state</button>

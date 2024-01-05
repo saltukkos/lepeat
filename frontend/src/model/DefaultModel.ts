@@ -18,6 +18,7 @@ export const germanArticleAttribute: AttributeDefinition = {
 }
 
 export const germanNounDefinition: TermDefinition = {
+    name: "Noun",
     attributes: [
         germanArticleAttribute,
         originalWordAttribute,
@@ -26,6 +27,7 @@ export const germanNounDefinition: TermDefinition = {
 }
 
 export const germanVerbDefinition: TermDefinition = {
+    name: "Verb",
     attributes: [
         originalWordAttribute,
         translatedWordAttribute,

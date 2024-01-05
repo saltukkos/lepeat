@@ -6,6 +6,7 @@ import Statistics from "../statistics/debug/Statistics";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
+import AddNewTermsPage from "../newWordsPage/AddNewTermsPage";
 import ProfileImportExport from "../dataExchange/ProfileImportExport";
 
 function HomePage() {
@@ -43,7 +44,7 @@ function HomePage() {
             );
         }
     } else if (renderState === "ADD_WORDS") {
-        render = <div> Here will be page for adding words</div>
+        render = (<AddNewTermsPage termDefinitions={profile.termDefinitions} terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />)
     } else if (renderState === "STATISTICS_DEBUG") {
         render = (
             <Statistics terms={profile.terms}

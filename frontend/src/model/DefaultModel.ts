@@ -35,6 +35,7 @@ export const germanVerbDefinition: TermDefinition = {
 }
 
 export const noun1: Term = {
+    id: 1,
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -44,6 +45,7 @@ export const noun1: Term = {
 }
 
 export const noun2: Term = {
+    id : 2,
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -53,6 +55,7 @@ export const noun2: Term = {
 }
 
 export const noun3: Term = {
+    id : 3,
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "das"],
@@ -62,6 +65,7 @@ export const noun3: Term = {
 }
 
 export const noun4: Term = {
+    id : 4,
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -71,6 +75,7 @@ export const noun4: Term = {
 }
 
 export const noun5: Term = {
+    id : 5,
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -80,6 +85,7 @@ export const noun5: Term = {
 }
 
 export const verb1: Term = {
+    id : 6,
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "laufen"],
@@ -88,6 +94,7 @@ export const verb1: Term = {
 }
 
 export const verb2: Term = {
+    id : 7,
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "lesen"],
@@ -96,6 +103,7 @@ export const verb2: Term = {
 }
 
 export const verb3: Term = {
+    id : 8,
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "schreiben"],
@@ -104,6 +112,7 @@ export const verb3: Term = {
 }
 
 export const verb4: Term = {
+    id : 9,
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sprechen"],
@@ -112,6 +121,7 @@ export const verb4: Term = {
 }
 
 export const verb5: Term = {
+    id : 10,
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sehen"],

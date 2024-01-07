@@ -1,10 +1,10 @@
 import React, {ChangeEvent, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {useSelector} from "react-redux";
-import {LepeatProfile} from "../../model/LepeatProfile";
+import {profileSelector} from "../../slices/profileSlice";
+import {useAppSelector} from "../../redux/hooks";
 
 function AddNewTermsPage() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const profile = useAppSelector(profileSelector).profile;
     const termDefinitions = profile.termDefinitions;
     const terms = profile.terms;
 

@@ -1,11 +1,11 @@
 import React, {CSSProperties, useState} from 'react';
 import { Container } from 'react-bootstrap';
-import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeTerms, serializeTerms} from "../../services/TermsSerializer";
-import {useSelector} from "react-redux";
+import {profileSelector} from "../../slices/profileSlice";
+import {useAppSelector} from "../../redux/hooks";
 
 function TermsImportExport() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const profile = useAppSelector(profileSelector).profile;
 
     const [textBoxData, setTextBoxData] = useState(serializeTerms(profile.terms));
 

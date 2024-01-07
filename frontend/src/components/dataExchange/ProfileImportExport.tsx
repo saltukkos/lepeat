@@ -1,18 +1,22 @@
-import React, {CSSProperties, useRef, useState} from 'react';
+import React, {CSSProperties, useEffect, useRef, useState} from 'react';
 import {Container} from 'react-bootstrap';
-import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
-import {useDispatch, useSelector} from "react-redux";
 import {CToast, CToastBody, CToaster,} from '@coreui/react'
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
+import {profileSelector, setProfile} from "../../slices/profileSlice";
 
 function ProfileImportExport() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
-    const dispatch = useDispatch()
+    const profile = useAppSelector(profileSelector).profile;
+    const dispatch = useAppDispatch();
 
-    const [textBoxData, setTextBoxData] = useState(serializeProfile(profile));
+    const [textBoxData, setTextBoxData] = useState("");
 
     const [toast, addToast] = useState(0)
     const toaster = useRef<HTMLDivElement>(null!)
+
+    useEffect(() => {
+        setTextBoxData(serializeProfile(profile));
+    }, [profile])
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(textBoxData);
@@ -22,7 +26,7 @@ function ProfileImportExport() {
         // assuming setProfile is expecting a string
         let newProfile = deserializeProfile(textBoxData);
         if (newProfile) {
-            dispatch({ type: 'set', profile: newProfile });
+            dispatch(setProfile({profile: newProfile}));
 
             // @ts-expect-error This shit does not work
             addToast((

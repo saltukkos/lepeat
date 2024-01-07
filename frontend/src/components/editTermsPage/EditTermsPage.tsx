@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {useSelector} from "react-redux";
-import {LepeatProfile} from "../../model/LepeatProfile";
+import {useAppSelector} from "../../redux/hooks";
+import {profileSelector} from "../../slices/profileSlice";
 
 function EditTermsPage() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const profile = useAppSelector(profileSelector).profile;
     const terms = profile.terms;
 
     const [editableTermIdx, setEditableTermIdx] = useState(-1);

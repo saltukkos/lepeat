@@ -153,14 +153,14 @@ export const articleTrainingDefinition: TrainingDefinition = {
     ])
 }
 
-const translationTrainingProgress: TrainingProgress = {
+export const translationTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>(
         [
             [verb5, {term: verb5, iterationNumber: 1, lastTrainingDate: Date.now()}]
         ])
 }
 
-const articlesTrainingProgress: TrainingProgress = {
+export const articlesTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>([
         [noun5, {term: noun5, iterationNumber: 1, lastTrainingDate: Date.now()}],
     ])

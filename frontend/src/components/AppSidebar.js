@@ -22,11 +22,13 @@ import 'simplebar-react/dist/simplebar.min.css'
 
 // sidebar nav config
 import navigation from '../_nav'
+import {useAppDispatch, useAppSelector} from "../redux/hooks";
+import {setSidebarShow, setUnfoldable, sidebarSelector} from "../slices/sidebarSlice";
 
 const AppSidebar = () => {
-  const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const dispatch = useAppDispatch();
+  const sidebarShow = useAppSelector(sidebarSelector).sidebarShow
+  const unfoldable = useAppSelector(sidebarSelector).unfoldable
 
   return (
     <CSidebar
@@ -36,7 +38,7 @@ const AppSidebar = () => {
       unfoldable={unfoldable}
       visible={sidebarShow}
       onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
+        dispatch(setSidebarShow(visible))
       }}
     >
       <CSidebarHeader className="border-bottom">
@@ -47,7 +49,7 @@ const AppSidebar = () => {
         <CCloseButton
           className="d-lg-none"
           dark
-          onClick={() => dispatch({ type: 'set', sidebarShow: false })}
+          onClick={() => dispatch(setSidebarShow(false))}
         />
       </CSidebarHeader>
 
@@ -58,7 +60,7 @@ const AppSidebar = () => {
       </CSidebarNav>
       <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
-          onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
+          onClick={() => dispatch(setUnfoldable(!unfoldable))}
         />
       </CSidebarFooter>
     </CSidebar>

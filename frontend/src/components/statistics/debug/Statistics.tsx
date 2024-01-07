@@ -1,12 +1,9 @@
 import React from "react";
-import {Term} from "../../../model/Term";
-import {TrainingDefinition} from "../../../model/TrainingDefinition";
-import {TrainingProgress} from "../../../model/TrainingProgress";
-import {LepeatProfile} from "../../../model/LepeatProfile";
-import {useSelector} from "react-redux";
+import {profileSelector} from "../../../slices/profileSlice";
+import {useAppSelector} from "../../../redux/hooks";
 
 function Statistics() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const profile = useAppSelector(profileSelector).profile;
     const terms = profile.terms;
     const trainingProgresses = profile.trainingProgresses;
 

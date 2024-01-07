@@ -13,10 +13,12 @@ import {
 } from '@coreui/react'
 
 import { CChartRadar } from '@coreui/react-chartjs'
-import {useSelector} from "react-redux";
+import {useAppSelector} from "../../redux/hooks";
+import {profileSelector} from "../../slices/profileSlice";
 
 const Dashboard = () => {
-  const profile = useSelector((state) => state.profile)
+  const profile = useAppSelector(profileSelector).profile;
+
   const navigate = useNavigate();
   const navigateToTraining = (name) => {
     navigate('/training_session', {

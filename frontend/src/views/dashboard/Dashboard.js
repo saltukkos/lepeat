@@ -15,6 +15,7 @@ import {
 import { CChartRadar } from '@coreui/react-chartjs'
 import {useSelector} from "react-redux";
 import {getTrainingStatistics} from "../../services/TrainingStatistics";
+import {getTermsToTrain} from "../../services/TrainingStarter";
 
 const Dashboard = () => {
   const profile = useSelector((state) => state.profile)
@@ -31,6 +32,7 @@ const Dashboard = () => {
     <>
       <CRow className="mb-4" xs={{ gutter: 4 }}>
         {profile.trainingDefinitions.map((training, index) => {
+          const termsToTrain = getTermsToTrain(profile, training);
           const trainingStatistics = getTrainingStatistics(training, profile);
           return (
               <CCol sm={6} xl={4} xxl={3} key={index}>
@@ -59,7 +61,7 @@ const Dashboard = () => {
                   </CCardHeader>
                   <CCardBody>
                     <CCardTitle>{training.name}</CCardTitle>
-                    <CCardText>You have 10 terms to learn and repeat.</CCardText>
+                    <CCardText>You have {termsToTrain.length} terms to learn and repeat.</CCardText>
                     <CButton color="primary" onClick={() => navigateToTraining(training.name)}>
                       Start training
                     </CButton>

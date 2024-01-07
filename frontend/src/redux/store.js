@@ -1,5 +1,6 @@
 import { legacy_createStore as createStore } from 'redux'
 import {germanProfile} from "../model/DefaultModel";
+import {deserializeProfileFromLocalStorage} from "../services/Persistence";
 
 const initialState = {
     sidebarShow: true,
@@ -16,5 +17,11 @@ const changeState = (state = initialState, { type, ...rest }) => {
     }
 }
 
-const store = createStore(changeState)
+function getStore() {
+    let store = createStore(changeState);
+    store.dispatch({type: 'set', profile: deserializeProfileFromLocalStorage()});
+    return store;
+}
+
+const store = getStore()
 export default store

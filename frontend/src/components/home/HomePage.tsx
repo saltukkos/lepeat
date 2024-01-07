@@ -30,42 +30,31 @@ function HomePage() {
 
     let render = <></>
 
-    if (renderState.startsWith("TRAINING:")) {
-        const trainingName = renderState.substring("TRAINING:".length);
-        const training = profile.trainingDefinitions.find(value => value.name === trainingName);
-        if (training) {
-            render = (
-                <TrainingSession onHomeButtonClicked={() => setRenderState("HOME")} trainingDefinition={training}
-                                 termTrainingProgress={getTermsToTrain(profile, training)}/>
-            )
-        } else {
-            render = (
-                <div>
-                    No training with name "{trainingName}" is found
-                </div>
-            );
-        }
-    } else if (renderState === "ADD_WORDS") {
-        render = (<AddNewTermsPage termDefinitions={profile.termDefinitions} terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />)
-    } else if (renderState === "EDIT_WORDS") {
-        render = (
-            <EditTermsPage terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />
-        )
-    } else if (renderState === "STATISTICS_DEBUG") {
-        render = (
-            <Statistics terms={profile.terms}
-                        trainingProgresses={profile.trainingProgresses}
-                        onHomeClick={() => setRenderState("HOME")} />
-        )
-    } else if (renderState === "IMPORT_EXPORTS_STATE") {
-        render = (
-            <ProfileImportExport onHomeButtonClicked={() => setRenderState("HOME")} profile={profile} setProfile={pr => setProfile(pr)}/>
-        )
-    } else if (renderState === "IMPORT_EXPORTS_TERMS") {
-        render = (
-            <TermsImportExport onHomeButtonClicked={() => setRenderState("HOME")} profile={profile} />
-        )
-    } else if (renderState === "HOME") {
+    // if (renderState === "ADD_WORDS") {
+    //     render = (<AddNewTermsPage termDefinitions={profile.termDefinitions} terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />)
+    // } else
+    // if (renderState === "EDIT_WORDS") {
+    //     render = (
+    //         <EditTermsPage terms={profile.terms} onHomeButtonClicked={() => setRenderState("HOME")} />
+    //     )
+    // } else 
+    // if (renderState === "STATISTICS_DEBUG") {
+    //     render = (
+    //         <Statistics terms={profile.terms}
+    //                     trainingProgresses={profile.trainingProgresses}
+    //                     onHomeClick={() => setRenderState("HOME")} />
+    //     )
+    // } else
+    // if (renderState === "IMPORT_EXPORTS_STATE") {
+    //     render = (
+    //         <ProfileImportExport onHomeButtonClicked={() => setRenderState("HOME")} profile={profile} setProfile={pr => setProfile(pr)}/>
+    //     )
+    // } else if (renderState === "IMPORT_EXPORTS_TERMS") {
+    //     render = (
+    //         <TermsImportExport onHomeButtonClicked={() => setRenderState("HOME")} profile={profile} />
+    //     )
+    // } else
+        if (renderState === "HOME") {
         render = (
             <div>
                 This is home page.

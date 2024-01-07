@@ -1,14 +1,13 @@
 import React, {ChangeEvent, useState} from "react";
-import {TermDefinition} from "../../model/TermDefinition";
-import {Term} from "../../model/Term";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
+import {useSelector} from "react-redux";
+import {LepeatProfile} from "../../model/LepeatProfile";
 
-interface AddNewTermsPageProps {
-    termDefinitions: TermDefinition[],
-    onHomeButtonClicked: () => void,
-    terms: Term[]
-}
-function AddNewTermsPage({termDefinitions, onHomeButtonClicked, terms} : AddNewTermsPageProps) {
+function AddNewTermsPage() {
+    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const termDefinitions = profile.termDefinitions;
+    const terms = profile.terms;
+
     const [selectedTermDefinitionsIdx, setSelectedTermDefinitionsIdx] = useState(0);
 
     const selectedTermDefinition = termDefinitions[selectedTermDefinitionsIdx];
@@ -58,9 +57,6 @@ function AddNewTermsPage({termDefinitions, onHomeButtonClicked, terms} : AddNewT
             );
         })}
         <button onClick={onSaveClicked}>Save</button>
-
-
-        <button onClick={onHomeButtonClicked}>Home</button>
     </div>
 }
 

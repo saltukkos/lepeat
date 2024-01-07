@@ -2,13 +2,11 @@ import React, {CSSProperties, useState} from 'react';
 import { Container } from 'react-bootstrap';
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeTerms, serializeTerms} from "../../services/TermsSerializer";
+import {useSelector} from "react-redux";
 
-interface TermsImportExportProps {
-    profile: LepeatProfile,
-    onHomeButtonClicked: () => void,
-}
+function TermsImportExport() {
+    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
 
-function TermsImportExport({ profile, onHomeButtonClicked }: TermsImportExportProps) {
     const [textBoxData, setTextBoxData] = useState(serializeTerms(profile.terms));
 
     const copyToClipboard = () => {
@@ -38,7 +36,6 @@ function TermsImportExport({ profile, onHomeButtonClicked }: TermsImportExportPr
             <textarea style={textAreaStyle} value={textBoxData} onChange={handleInput}/>
             <button onClick={copyToClipboard}>Copy textbox data to clipboard</button>
             <button onClick={setTermsFromTextBoxData}>Import words from textbox data (overwrites existing)</button>
-            <button onClick={onHomeButtonClicked}> Home</button>
         </Container>
     );
 }

@@ -2,14 +2,12 @@ import React, {CSSProperties, useState} from 'react';
 import { Container } from 'react-bootstrap';
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
+import {useDispatch, useSelector} from "react-redux";
 
-interface ProfileImportExportProps {
-    profile: LepeatProfile,
-    setProfile: (profile: LepeatProfile) => void,
-    onHomeButtonClicked: () => void,
-}
+function ProfileImportExport() {
+    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const dispatch = useDispatch()
 
-function ProfileImportExport({ profile, setProfile, onHomeButtonClicked }: ProfileImportExportProps) {
     const [textBoxData, setTextBoxData] = useState(serializeProfile(profile));
 
     const copyToClipboard = () => {
@@ -20,7 +18,7 @@ function ProfileImportExport({ profile, setProfile, onHomeButtonClicked }: Profi
         // assuming setProfile is expecting a string
         let newProfile = deserializeProfile(textBoxData);
         if (newProfile) {
-            setProfile(newProfile);
+            dispatch({ type: 'set', profile: newProfile });
         } else {
             alert("Can't deserialize profile")
         }
@@ -45,7 +43,6 @@ function ProfileImportExport({ profile, setProfile, onHomeButtonClicked }: Profi
             <textarea style={textAreaStyle} value={textBoxData} onChange={handleInput}/>
             <button onClick={copyToClipboard}>Copy textbox data to clipboard</button>
             <button onClick={setProfileFromTextBoxData}>Set profile from textbox data</button>
-            <button onClick={onHomeButtonClicked}> Home</button>
         </Container>
     );
 }

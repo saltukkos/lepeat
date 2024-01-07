@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import './card.scss';
 
 type CardProps = {
     question: string;
@@ -12,7 +11,6 @@ function Card({question, answer}: CardProps) {
     useEffect(() => {
         setMode("QUESTION")
     }, [question, answer]);
-
 
     const onClick = () => {
         setMode(mode === "QUESTION" ? "ANSWER" : "QUESTION");

@@ -2,15 +2,14 @@ import React from "react";
 import {Term} from "../../../model/Term";
 import {TrainingDefinition} from "../../../model/TrainingDefinition";
 import {TrainingProgress} from "../../../model/TrainingProgress";
+import {LepeatProfile} from "../../../model/LepeatProfile";
+import {useSelector} from "react-redux";
 
-interface StatisticsProps {
-    terms: Term[],
-    trainingProgresses: Map<TrainingDefinition, TrainingProgress>,
-    onHomeClick: () => void
+function Statistics() {
+    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const terms = profile.terms;
+    const trainingProgresses = profile.trainingProgresses;
 
-}
-
-function Statistics({terms, trainingProgresses, onHomeClick}: StatisticsProps) {
     let tableData: string[][] = [];
 
     let firstLine: string[] = [];
@@ -55,7 +54,6 @@ function Statistics({terms, trainingProgresses, onHomeClick}: StatisticsProps) {
     return (
         <div>
             <table>{table}</table>
-            <button onClick={onHomeClick}>Home</button>
         </div>);
 }
 

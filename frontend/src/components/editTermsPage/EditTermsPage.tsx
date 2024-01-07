@@ -1,13 +1,12 @@
-import {Term} from "../../model/Term";
 import React, {useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {TermDefinition} from "../../model/TermDefinition";
+import {useSelector} from "react-redux";
+import {LepeatProfile} from "../../model/LepeatProfile";
 
-interface EditTermsPageProps {
-    terms: Term[],
-    onHomeButtonClicked: () => void
-}
-function EditTermsPage({terms, onHomeButtonClicked} : EditTermsPageProps) {
+function EditTermsPage() {
+    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const terms = profile.terms;
+
     const [editableTermIdx, setEditableTermIdx] = useState(-1);
 
     const t: [AttributeDefinition, string][] = []
@@ -62,8 +61,6 @@ function EditTermsPage({terms, onHomeButtonClicked} : EditTermsPageProps) {
                     </div>
                 )
             })}
-
-            <button onClick={onHomeButtonClicked}>Home</button>
         </div>
     )
 }

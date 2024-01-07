@@ -49,6 +49,7 @@ body {
 
 .footer {
   min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+  font-size: 0.8rem;
 }
 
 @if $enable-dark-mode {

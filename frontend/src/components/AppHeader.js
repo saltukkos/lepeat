@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useContext, useEffect, useRef} from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -12,15 +12,15 @@ import {
   CHeaderToggler,
   CNavLink,
   CNavItem,
-  useColorModes, CButton, CToast, CToastBody, CToaster,
+  useColorModes, CButton
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {cilCloudDownload, cilContrast, cilMenu, cilMoon, cilSun} from '@coreui/icons'
 import {serializeProfileToLocalStorage} from "../services/Persistence";
+import ToastContext from "../contexts/ToastContext";
 
 const AppHeader = () => {
-  const [toast, addToast] = useState(0);
-  const toaster = useRef();
+  const { showToast } = useContext(ToastContext)
 
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
@@ -37,11 +37,7 @@ const AppHeader = () => {
 
   function saveProfile() {
     serializeProfileToLocalStorage();
-    addToast((
-        <CToast autohide={true} delay={2000}>
-          <CToastBody>Profile is saved</CToastBody>
-        </CToast>
-    ))
+    showToast("Profile is saved", "success")
   }
 
   return (
@@ -64,7 +60,6 @@ const AppHeader = () => {
           <CButton onClick={saveProfile}>
             <CIcon icon={cilCloudDownload} size="lg" />
           </CButton>
-          <CToaster ref={toaster} push={toast} placement="top-end"/>
         </CHeaderNav>
         <CHeaderNav>
           <li className="nav-item py-1">

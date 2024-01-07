@@ -1,16 +1,19 @@
-import React, {CSSProperties, useState} from 'react';
+import React, {CSSProperties, useContext, useState} from 'react';
 import { Container } from 'react-bootstrap';
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeTerms, serializeTerms} from "../../services/TermsSerializer";
 import {useSelector} from "react-redux";
+import ToastContext from "../../contexts/ToastContext";
 
 function TermsImportExport() {
+    const { showToast } = useContext(ToastContext)
     const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
 
     const [textBoxData, setTextBoxData] = useState(serializeTerms(profile.terms));
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(textBoxData);
+        showToast("Words are copied to clipboard", "success");
     };
 
     const setTermsFromTextBoxData = () => {

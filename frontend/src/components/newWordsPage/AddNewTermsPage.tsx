@@ -1,9 +1,11 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useContext, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
 import {useSelector} from "react-redux";
 import {LepeatProfile} from "../../model/LepeatProfile";
+import ToastContext from "../../contexts/ToastContext";
 
 function AddNewTermsPage() {
+    const { showToast } = useContext(ToastContext)
     const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
     const termDefinitions = profile.termDefinitions;
     const terms = profile.terms;
@@ -35,6 +37,7 @@ function AddNewTermsPage() {
         const maxId = terms.reduce((max, term) => Math.max(max, term.id), 0);
         terms.push({id: maxId + 1, termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData})
         setInputsData([]);
+        showToast("Word added", "success")
     }
 
     return <div>

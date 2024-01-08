@@ -7,7 +7,7 @@ const isDebug = true;
 export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: TrainingDefinition) {
     let trainingProgress = profile.trainingProgresses.get(trainingDefinition);
     if (!trainingProgress) {
-        trainingProgress = { progress: new Map() };
+        trainingProgress = {progress: new Map()};
         profile.trainingProgresses.set(trainingDefinition, trainingProgress);
     }
 
@@ -29,26 +29,24 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
             }
             return termProgress;
         })
-        .filter(progress => doNeedToTrain(progress));
+        .filter(progress => doNeedToTrain(progress, profile, currentTime));
+}
 
-    function doNeedToTrain(progress: TermTrainingProgress) {
-        let lastTrainingDate = progress.lastTrainingDate;
-        if (!lastTrainingDate)
-        {
-            return true;
-        }
 
-        let interval = profile.intervals[progress.iterationNumber]; //TODO what to do after the last iteration?
-        if (isDebug)
-        {
-            interval *= 60 * 1000; //interpret as minutes in debug mode
-        }
-        else
-        {
-            interval *= 24 * 60 * 60 * 1000; //interpret as days in normal mode
-        }
-
-        let nextTrainDateForTerm = lastTrainingDate + interval;
-        return nextTrainDateForTerm < currentTime;
+export function doNeedToTrain(progress: TermTrainingProgress, profile: LepeatProfile, currentTime: number) {
+    let lastTrainingDate = progress.lastTrainingDate;
+    if (!lastTrainingDate) {
+        return true;
     }
+
+    let interval = profile.intervals[progress.iterationNumber]; //TODO what to do after the last iteration?
+    if (isDebug)
+    {
+        interval *= 60 * 1000; //interpret as minutes in debug mode
+    } else {
+        interval *= 24 * 60 * 60 * 1000; //interpret as days in normal mode
+    }
+
+    let nextTrainDateForTerm = lastTrainingDate + interval;
+    return nextTrainDateForTerm < currentTime;
 }

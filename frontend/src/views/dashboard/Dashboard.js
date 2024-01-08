@@ -15,7 +15,7 @@ import {
 import { CChartRadar } from '@coreui/react-chartjs'
 import {useSelector} from "react-redux";
 import {getTrainingStatistics} from "../../services/TrainingStatistics";
-import {getTermsToTrain} from "../../services/TrainingStarter";
+import {printTermWord} from "../../services/L18n";
 
 const Dashboard = () => {
   const profile = useSelector((state) => state.profile)
@@ -32,8 +32,8 @@ const Dashboard = () => {
     <>
       <CRow className="mb-4" xs={{ gutter: 4 }}>
         {profile.trainingDefinitions.map((training, index) => {
-          const termsToTrain = getTermsToTrain(profile, training);
-          const trainingStatistics = getTrainingStatistics(training, profile);
+          const [trainingStatistics, thisTimeStatistics] = getTrainingStatistics(training, profile);
+          const termToRepeat = trainingStatistics.slice(1).reduce((sum, value) => sum + value, 0);
           return (
               <CCol sm={6} xl={4} xxl={3} key={index}>
                 <CCard className="mb-4">
@@ -46,14 +46,24 @@ const Dashboard = () => {
                                   (_, i) => `${i + 1} iteration`)),
                           datasets: [
                             {
-                              label: 'Terms on iteration',
-                              backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                              borderColor: 'rgba(151, 187, 205, 1)',
-                              pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                              pointBorderColor: '#fff',
-                              pointHighlightFill: '#fff',
+                              label:                'Terms to train now',
+                              backgroundColor:      'rgba(255, 99, 132, 0.2)',
+                              borderColor:          'rgba(255, 99, 132, 1)',
+                              pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                              pointBorderColor:     '#fff',
+                              pointHighlightFill:   '#fff',
                               pointHighlightStroke: 'rgba(151, 187, 205, 1)',
-                              data: trainingStatistics,
+                              data:                 thisTimeStatistics,
+                            },
+                            {
+                              label:                'Terms on iteration',
+                              backgroundColor:      'rgba(151, 187, 205, 0.2)',
+                              borderColor:          'rgba(151, 187, 205, 1)',
+                              pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                              pointBorderColor:     '#fff',
+                              pointHighlightFill:   '#fff',
+                              pointHighlightStroke: 'rgba(220, 220, 220, 1)',
+                              data:                 trainingStatistics,
                             },
                           ],
                         }}
@@ -61,7 +71,7 @@ const Dashboard = () => {
                   </CCardHeader>
                   <CCardBody>
                     <CCardTitle>{training.name}</CCardTitle>
-                    <CCardText>You have {termsToTrain.length} terms to learn and repeat.</CCardText>
+                    <CCardText>You have {printTermWord(trainingStatistics[0])} to learn and {printTermWord(termToRepeat)} to repeat.</CCardText>
                     <CButton color="primary" onClick={() => navigateToTraining(training.name)}>
                       Start training
                     </CButton>

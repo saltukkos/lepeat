@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef} from 'react'
-import { NavLink } from 'react-router-dom'
+ import {useLocation} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -18,6 +18,7 @@ import CIcon from '@coreui/icons-react'
 import {cilCloudDownload, cilContrast, cilMenu, cilMoon, cilSun} from '@coreui/icons'
 import {serializeProfileToLocalStorage} from "../services/Persistence";
 import ToastContext from "../contexts/ToastContext";
+import routes from "../routes";
 
 const AppHeader = () => {
   const { showToast } = useContext(ToastContext)
@@ -35,6 +36,9 @@ const AppHeader = () => {
     })
   }, [])
 
+  const location = useLocation().pathname;
+  const currentRoute = routes.find((route) => route.path === location)?.name ?? "";
+
   function saveProfile() {
     serializeProfileToLocalStorage();
     showToast("Profile is saved", "success")
@@ -49,10 +53,10 @@ const AppHeader = () => {
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
+        <CHeaderNav className="fs-5">
           <CNavItem>
-            <CNavLink to="/dashboard" component={NavLink}>
-              Dashboard
+            <CNavLink>
+              {currentRoute}
             </CNavLink>
           </CNavItem>
         </CHeaderNav>

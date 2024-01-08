@@ -17,7 +17,7 @@ function Card({question, answer}: CardProps) {
     }
 
     return (
-        <div className="card" onClick={onClick}>
+        <div className="card p-3" onClick={onClick}>
             <div>
                 {mode}
             </div>

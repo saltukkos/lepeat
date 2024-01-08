@@ -57,12 +57,11 @@ function TrainingSession(
     }
 
     return (
-        <Container className="page">
+        <Container className="page gap-3">
             <Card question={question} answer={answer}/>
-            {/*<button onClick={onHomeButtonClicked}> Home</button>*/}
-            <button onClick={onRightClicked}>Right</button>
-            <button onClick={onWrongClicked}>Wrong</button>
-            <button onClick={onSkipClicked}>Skip</button>
+            <CButton color={"success"} onClick={onRightClicked}>Right</CButton>
+            <CButton color={"warning"} onClick={onWrongClicked}>Wrong</CButton>
+            <CButton color={"primary"} onClick={onSkipClicked}>Skip</CButton>
         </Container>
     );
 }

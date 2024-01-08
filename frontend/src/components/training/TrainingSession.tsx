@@ -2,39 +2,35 @@ import React, {useState} from "react";
 import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {getTermsToTrain} from "../../services/TrainingStarter";
-
-// interface TrainingSessionProps {
-//     trainingDefinition: TrainingDefinition,
-//     termTrainingProgress: TermTrainingProgress[],
-//     onHomeButtonClicked: () => void
-// }
+import {CButton} from "@coreui/react";
 
 function TrainingSession(
-    // {trainingDefinition, termTrainingProgress, onHomeButtonClicked}: TrainingSessionProps
 ) {
+    const navigate = useNavigate();
     const location = useLocation();
     const trainingName = location.state.trainingName;
     const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
 
+    const termTrainingProgress = React.useMemo(() => trainingDefinition ? getTermsToTrain(profile, trainingDefinition) : undefined, []);
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
 
-    if (!trainingDefinition){
+    if (!trainingDefinition || !termTrainingProgress){
         return ("Unknown training");
-    } 
+    }
 
-    const termTrainingProgress = getTermsToTrain(profile, trainingDefinition);
+    console.log("terms to train:" + termTrainingProgress.length)
     
     if (currentTermIdx >= termTrainingProgress.length) {
         return (
-            <div>
+            <Container className="page">
                 Finished
-                {/*<button onClick={onHomeButtonClicked}> Home </button>*/}
-            </div>)
+                <CButton color="primary" onClick={() => navigate('/')}>Back to the Dashboard</CButton>
+            </Container>)
     }
 
     let currentTermProgress = termTrainingProgress[currentTermIdx];

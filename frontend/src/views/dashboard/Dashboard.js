@@ -33,7 +33,7 @@ const Dashboard = () => {
       <CRow className="mb-4" xs={{ gutter: 4 }}>
         {profile.trainingDefinitions.map((training, index) => {
           const [trainingStatistics, thisTimeStatistics] = getTrainingStatistics(training, profile);
-          const termToRepeat = trainingStatistics.slice(1).reduce((sum, value) => sum + value, 0);
+          const termToRepeat = thisTimeStatistics.slice(1).reduce((sum, value) => sum + value, 0);
           return (
               <CCol sm={6} xl={4} xxl={3} key={index}>
                 <CCard className="mb-4">

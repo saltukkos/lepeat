@@ -1,13 +1,20 @@
-import React, {CSSProperties, useContext, useState} from 'react';
+import React, {CSSProperties, useContext, useEffect, useState} from 'react';
 import {Container} from 'react-bootstrap';
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
 import {useDispatch, useSelector} from "react-redux";
 import ToastContext from "../../contexts/ToastContext";
+import ProfileContext from "../../contexts/ProfileContext";
+import {germanProfile} from "../../model/DefaultModel";
 
 function ProfileImportExport() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
-    const dispatch = useDispatch()
+    const { getLepeatProfile, setLepeatProfile } = useContext(ProfileContext);
+    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
+
+    useEffect(() => {
+        setProfile(getLepeatProfile());
+    }, [getLepeatProfile]);
+
 
     const [textBoxData, setTextBoxData] = useState(serializeProfile(profile));
 
@@ -22,7 +29,7 @@ function ProfileImportExport() {
         // assuming setProfile is expecting a string
         let newProfile = deserializeProfile(textBoxData);
         if (newProfile) {
-            dispatch({ type: 'set', profile: newProfile });
+            setLepeatProfile(newProfile);
             showToast("Profile is loaded", "success");
         } else {
             showToast("Can't deserialize profile", "danger");

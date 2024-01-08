@@ -1,12 +1,16 @@
-import React from "react";
-import {Term} from "../../../model/Term";
-import {TrainingDefinition} from "../../../model/TrainingDefinition";
-import {TrainingProgress} from "../../../model/TrainingProgress";
+import React, {useContext, useEffect, useState} from "react";
 import {LepeatProfile} from "../../../model/LepeatProfile";
-import {useSelector} from "react-redux";
+import ProfileContext from "../../../contexts/ProfileContext";
+import {germanProfile} from "../../../model/DefaultModel";
 
 function Statistics() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const { getLepeatProfile } = useContext(ProfileContext);
+    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
+
+    useEffect(() => {
+        setProfile(getLepeatProfile());
+    }, [getLepeatProfile]);
+
     const terms = profile.terms;
     const trainingProgresses = profile.trainingProgresses;
 

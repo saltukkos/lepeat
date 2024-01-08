@@ -1,16 +1,21 @@
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {useSelector} from "react-redux";
 import {LepeatProfile} from "../../model/LepeatProfile";
+import ProfileContext from "../../contexts/ProfileContext";
+import {germanProfile} from "../../model/DefaultModel";
 
 function EditTermsPage() {
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const { getLepeatProfile } = useContext(ProfileContext);
+    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
+
+    useEffect(() => {
+        setProfile(getLepeatProfile());
+    }, [getLepeatProfile]);
+
     const terms = profile.terms;
 
     const [editableTermIdx, setEditableTermIdx] = useState(-1);
-
-    const t: [AttributeDefinition, string][] = []
-    const [inputsData, setInputsData] = useState(t);
+    const [inputsData, setInputsData] = useState<[AttributeDefinition, string][]>([]);
 
     const editTerm = (idx: number) => {
         setInputsData(Array.from(terms[idx].attributeValues.entries()));
@@ -46,7 +51,7 @@ function EditTermsPage() {
                         {
                             inputsData.map((attributeData, attrIdx) => {
                                 return (
-                                    <input type="text" id="idx" value={attributeData[1]}
+                                    <input key={`${attributeData[1]}-${attrIdx}`} type="text" id="idx" value={attributeData[1]}
                                            onChange={(e) => onChangeInput(attributeData[0], e.target.value, attrIdx)}/>
                             )
                             })
@@ -54,7 +59,7 @@ function EditTermsPage() {
                     </> : Array.from(t.attributeValues.values()).join("; ");
 
                 return (
-                    <div>
+                    <div key={`term-${idx}`}>
                         {termRow}
                         {idx === editableTermIdx ?<button onClick={() => onSaveEdition()}>Save</button> : <button onClick={() => editTerm(idx)}>Edit</button>}
                         <button>Remove</button>

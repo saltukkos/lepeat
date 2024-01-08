@@ -6,11 +6,14 @@ import App from './App'
 import { Provider } from 'react-redux'
 import store from './redux/store'
 import ToastProvider from "./contexts/ToastProvider";
+import ProfileProvider from "./contexts/ProfileProvider";
 
 createRoot(document.getElementById('root') as Element).render(
     <Provider store={store}>
         <ToastProvider>
-            <App />
+            <ProfileProvider>
+                <App />
+            </ProfileProvider>
         </ToastProvider>
     </Provider>,
 )

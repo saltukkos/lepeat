@@ -2,10 +2,13 @@ import {LepeatProfile} from "../model/LepeatProfile";
 import {deserializeProfile, serializeProfile} from "./ProfileSerializer";
 import store from "../redux/store";
 import {germanProfile} from "../model/DefaultModel";
+import {useContext, useEffect, useState} from "react";
+import ProfileContext from "../contexts/ProfileContext";
 
-export function serializeProfileToLocalStorage(){
-    const profile = store.getState().profile as LepeatProfile;
+export function serializeProfileToLocalStorage(profile: LepeatProfile){
     const serializedProfile = serializeProfile(profile);
+    console.log("serProfile")
+    console.log(serializedProfile)
     localStorage.setItem('profile', serializedProfile)
 }
 

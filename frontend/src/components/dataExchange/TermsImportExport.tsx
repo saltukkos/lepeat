@@ -1,13 +1,23 @@
-import React, {CSSProperties, useContext, useState} from 'react';
+import React, {CSSProperties, useContext, useEffect, useState} from 'react';
 import { Container } from 'react-bootstrap';
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeTerms, serializeTerms} from "../../services/TermsSerializer";
 import {useSelector} from "react-redux";
 import ToastContext from "../../contexts/ToastContext";
+import ProfileContext from "../../contexts/ProfileContext";
+import {germanProfile} from "../../model/DefaultModel";
 
 function TermsImportExport() {
     const { showToast } = useContext(ToastContext)
-    const profile = useSelector<any>((state) => state.profile) as LepeatProfile; //TODO save types
+    const { getLepeatProfile } = useContext(ProfileContext);
+    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
+
+    useEffect(() => {
+        const lProfile = getLepeatProfile();
+        setProfile(lProfile);
+        setTextBoxData(serializeTerms(lProfile.terms))
+    }, [getLepeatProfile]);
+
 
     const [textBoxData, setTextBoxData] = useState(serializeTerms(profile.terms));
 
@@ -17,7 +27,10 @@ function TermsImportExport() {
     };
 
     const setTermsFromTextBoxData = () => {
-        deserializeTerms(textBoxData, profile);
+        let newTerms = deserializeTerms(textBoxData, profile);
+        profile.terms = Array.from(newTerms.values());
+        console.log("terms")
+        console.log(newTerms)
     };
 
     const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useRef} from 'react'
- import {useLocation} from 'react-router-dom'
+import React, {useContext, useEffect, useRef, useState} from 'react'
+import {useLocation} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -19,9 +19,13 @@ import {cilCloudDownload, cilContrast, cilMenu, cilMoon, cilSun} from '@coreui/i
 import {serializeProfileToLocalStorage} from "../services/Persistence";
 import ToastContext from "../contexts/ToastContext";
 import routes from "../routes";
+import ProfileContext from "../contexts/ProfileContext";
+import {germanProfile} from "../model/DefaultModel";
 
 const AppHeader = () => {
   const { showToast } = useContext(ToastContext)
+
+  const { getLepeatProfile } = useContext(ProfileContext);
 
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
@@ -40,7 +44,10 @@ const AppHeader = () => {
   const currentRoute = routes.find((route) => route.path === location)?.name ?? "";
 
   function saveProfile() {
-    serializeProfileToLocalStorage();
+    let lepeatProfile = getLepeatProfile();
+    console.log("data to save")
+    console.log(lepeatProfile)
+    serializeProfileToLocalStorage(lepeatProfile);
     showToast("Profile is saved", "success")
   }
 

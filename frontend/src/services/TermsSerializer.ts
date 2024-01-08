@@ -50,5 +50,4 @@ export function deserializeTerms(data: string, profile: LepeatProfile){
     }
 
     return terms;
-
 }

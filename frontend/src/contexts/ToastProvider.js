@@ -16,7 +16,7 @@ const ToastProvider = ({ children }) => {
 
     return (
       <ToastContext.Provider value={{ showToast }}>
-        <CToaster ref={toaster} push={toast} placement="top-end" />
+        <CToaster className="mb-1" ref={toaster} push={toast} placement="bottom-center" />
         {children}
       </ToastContext.Provider>
   );

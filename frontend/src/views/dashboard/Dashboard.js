@@ -67,6 +67,17 @@ const Dashboard = () => {
                             },
                           ],
                         }}
+                        options={{
+                          scales: {
+                            r: {
+                              ticks: {
+                                showLabelBackdrop: false, //remove white background around ticks
+                                precision: 0, //do not allow fractional numbers
+                                z: 1,
+                              },
+                            }
+                          },
+                        }}
                     />
                   </CCardHeader>
                   <CCardBody>

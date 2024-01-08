@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -16,9 +16,12 @@ import { CChartRadar } from '@coreui/react-chartjs'
 import {useSelector} from "react-redux";
 import {getTrainingStatistics} from "../../services/TrainingStatistics";
 import {printTermWord} from "../../services/L18n";
+import ProfileContext from "../../contexts/ProfileContext";
 
 const Dashboard = () => {
-  const profile = useSelector((state) => state.profile)
+  const { getLepeatProfile } = useContext(ProfileContext);
+
+  const profile = getLepeatProfile();
   const navigate = useNavigate();
   const navigateToTraining = (name) => {
     navigate('/training_session', {

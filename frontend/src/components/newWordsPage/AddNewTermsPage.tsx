@@ -3,6 +3,7 @@ import {AttributeDefinition} from "../../model/AttributeDefinition";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
 import {markProfileDirty} from "../../services/Persistence";
+import {CButton, CFormInput, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 
 function AddNewTermsPage() {
     const { showToast } = useContext(ToastContext)
@@ -44,24 +45,27 @@ function AddNewTermsPage() {
 
     return <div>
 
-        <select name="termDefinition" id="termDefinition" onChange={onChangeSelect}>
-            {termDefinitions.map((e, idx) => {
-                return (
-                    <option value={`${idx}`}>{e.name}</option>
+        <CFormSelect
+            aria-label="Default select example"
+            onChange={onChangeSelect}
+            options={
+                termDefinitions.map((e, idx) => ({label: e.name, value: `${idx}`})
                 )
-            })}
-        </select>
+            }
+            className="mb-4"
+        />
 
 
         {selectedTermDefinition.attributes.map((e, idx) => {
+            let data = inputsData[idx] ?? "";
             return (
-                <div>
-                    <label>{e.name}</label>
-                    <input type="text" id="idx" value={inputsData[idx] ?? ""} onChange={(e) => onChangeInput(e.target.value, idx)}/><br/><br/>
-                </div>
+                <CInputGroup className="mb-3">
+                    <CInputGroupText id="basic-addon3">{e.name}</CInputGroupText>
+                    <CFormInput id={`${data}-${idx}`} value={data} aria-describedby="basic-addon3" onChange={(e) => onChangeInput(e.target.value, idx)}/>
+                </CInputGroup>
             );
         })}
-        <button onClick={onSaveClicked}>Save</button>
+        <CButton onClick={onSaveClicked} color="primary">Save</CButton>
     </div>
 }
 

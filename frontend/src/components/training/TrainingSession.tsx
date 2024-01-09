@@ -4,28 +4,27 @@ import Card from '../card/Card';
 import './wordCheck.scss';
 import {useLocation, useNavigate} from "react-router-dom";
 import {getTermsToTrain} from "../../services/TrainingStarter";
-import {CButton} from "@coreui/react";
+import {CButton, CButtonGroup} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {markProfileDirty} from "../../services/Persistence";
 
-function TrainingSession(
-) {
+function TrainingSession() {
     const navigate = useNavigate();
     const location = useLocation();
     const trainingName = location.state.trainingName;
 
-    const { profile } = useContext(ProfileContext);
+    const {profile} = useContext(ProfileContext);
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
 
     const termTrainingProgress = React.useMemo(() => trainingDefinition ? getTermsToTrain(profile, trainingDefinition) : undefined, [profile, trainingDefinition]);
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
 
-    if (!trainingDefinition || !termTrainingProgress){
+    if (!trainingDefinition || !termTrainingProgress) {
         return ("Unknown training");
     }
 
     console.log("terms to train:" + termTrainingProgress.length)
-    
+
     if (currentTermIdx >= termTrainingProgress.length) {
         return (
             <Container className="page">
@@ -61,10 +60,16 @@ function TrainingSession(
 
     return (
         <Container className="page gap-3">
-            <Card question={question} answer={answer}/>
-            <CButton color={"success"} onClick={onRightClicked}>Right</CButton>
-            <CButton color={"warning"} onClick={onWrongClicked}>Wrong</CButton>
-            <CButton color={"primary"} onClick={onSkipClicked}>Skip</CButton>
+            <Card question={question}
+                  answer={answer}
+                  onRightClicked={onRightClicked}
+                  onSkipClicked={onSkipClicked}
+                  onWrongClicked={onWrongClicked}/>
+            {/*<Container className="gap-4 ">*/}
+            {/*    <CButton color={"danger"} onClick={onWrongClicked}>Wrong</CButton>*/}
+            {/*    <CButton color={"info"} onClick={onSkipClicked}>Skip</CButton>*/}
+            {/*    <CButton color={"success"} onClick={onRightClicked}>Right</CButton>*/}
+            {/*</Container>*/}
         </Container>
     );
 }

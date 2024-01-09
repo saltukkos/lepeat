@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from "react";
+import {CButton, CCard, CCardFooter, CCardHeader, CCardText, CCardTitle} from "@coreui/react";
 
 type CardProps = {
     question: string;
     answer: string;
+    onWrongClicked: () => void,
+    onRightClicked: () => void,
+    onSkipClicked: () => void
 };
 
-function Card({question, answer}: CardProps) {
+function Card({question, answer, onRightClicked, onWrongClicked, onSkipClicked}: CardProps) {
     const [mode, setMode] = useState<"QUESTION" | "ANSWER">("QUESTION");
 
     useEffect(() => {
@@ -17,12 +21,19 @@ function Card({question, answer}: CardProps) {
     }
 
     return (
-        <div className="card p-3" onClick={onClick}>
-            <div>
-                {mode}
+        <CCard>
+            <div className="m-2 text-center" onClick={onClick}>
+                <CCardTitle>{mode}</CCardTitle>
+                <CCardText>
+                    {mode === "QUESTION" ? question : answer}
+                </CCardText>
             </div>
-            {mode === "QUESTION" ? question : answer}
-        </div>
+            <CCardFooter>
+                <CButton className="mx-2" color={"danger"} onClick={onWrongClicked}>Wrong</CButton>
+                <CButton className="mx-2" color={"info"} onClick={onSkipClicked}>Skip</CButton>
+                <CButton className="mx-2" color={"success"} onClick={onRightClicked}>Right</CButton>
+            </CCardFooter>
+        </CCard>
     )
 }
 

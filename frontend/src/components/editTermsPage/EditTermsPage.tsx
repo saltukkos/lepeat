@@ -1,16 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {LepeatProfile} from "../../model/LepeatProfile";
 import ProfileContext from "../../contexts/ProfileContext";
-import {germanProfile} from "../../model/DefaultModel";
 
 function EditTermsPage() {
-    const { getLepeatProfile } = useContext(ProfileContext);
-    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
-
-    useEffect(() => {
-        setProfile(getLepeatProfile());
-    }, [getLepeatProfile]);
+    const { profile } = useContext(ProfileContext);
 
     const terms = profile.terms;
 

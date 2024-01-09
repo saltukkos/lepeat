@@ -1,19 +1,11 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, useContext, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
-import {useSelector} from "react-redux";
-import {LepeatProfile} from "../../model/LepeatProfile";
 import ToastContext from "../../contexts/ToastContext";
-import {germanProfile} from "../../model/DefaultModel";
 import ProfileContext from "../../contexts/ProfileContext";
 
 function AddNewTermsPage() {
     const { showToast } = useContext(ToastContext)
-    const { getLepeatProfile } = useContext(ProfileContext);
-    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
-
-    useEffect(() => {
-        setProfile(getLepeatProfile());
-    }, [getLepeatProfile]);
+    const { profile } = useContext(ProfileContext);
 
     const termDefinitions = profile.termDefinitions;
     const terms = profile.terms;

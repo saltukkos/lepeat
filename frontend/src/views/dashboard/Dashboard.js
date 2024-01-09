@@ -13,15 +13,12 @@ import {
 } from '@coreui/react'
 
 import { CChartRadar } from '@coreui/react-chartjs'
-import {useSelector} from "react-redux";
 import {getTrainingStatistics} from "../../services/TrainingStatistics";
 import {printTermWord} from "../../services/L18n";
 import ProfileContext from "../../contexts/ProfileContext";
 
 const Dashboard = () => {
-  const { getLepeatProfile } = useContext(ProfileContext);
-
-  const profile = getLepeatProfile();
+  const { profile } = useContext(ProfileContext);
   const navigate = useNavigate();
   const navigateToTraining = (name) => {
     navigate('/training_session', {

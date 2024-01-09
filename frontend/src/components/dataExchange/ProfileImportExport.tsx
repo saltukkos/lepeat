@@ -1,35 +1,25 @@
-import React, {CSSProperties, useContext, useEffect, useState} from 'react';
+import React, {CSSProperties, useContext, useState} from 'react';
 import {Container} from 'react-bootstrap';
-import {LepeatProfile} from "../../model/LepeatProfile";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
-import {useDispatch, useSelector} from "react-redux";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
-import {germanProfile} from "../../model/DefaultModel";
 
 function ProfileImportExport() {
-    const { getLepeatProfile, setLepeatProfile } = useContext(ProfileContext);
-    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
-
-    useEffect(() => {
-        setProfile(getLepeatProfile());
-    }, [getLepeatProfile]);
-
-
+    const { profile, setProfile } = useContext(ProfileContext);
     const [textBoxData, setTextBoxData] = useState(serializeProfile(profile));
-
     const { showToast } = useContext(ToastContext)
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(textBoxData);
-        showToast("Profile is copied to clipboard", "success");
+        navigator.clipboard.writeText(textBoxData).then(r => {
+            showToast("Profile is copied to clipboard", "success")
+        });
     };
 
     const setProfileFromTextBoxData = () => {
         // assuming setProfile is expecting a string
         let newProfile = deserializeProfile(textBoxData);
         if (newProfile) {
-            setLepeatProfile(newProfile);
+            setProfile(newProfile);
             showToast("Profile is loaded", "success");
         } else {
             showToast("Can't deserialize profile", "danger");

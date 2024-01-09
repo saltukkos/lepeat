@@ -2,15 +2,19 @@ import React from 'react';
 import {LepeatProfile} from "../model/LepeatProfile";
 
 interface ProfileContextState {
-    getLepeatProfile: () => LepeatProfile,
-    setLepeatProfile: (profile: LepeatProfile) => void;
+    profile: LepeatProfile,
+    setProfile: (profile: LepeatProfile) => void;
 }
 
 const initialState : ProfileContextState = {
-    getLepeatProfile: () => {
-        return {termDefinitions: [], trainingDefinitions: [], terms: [], trainingProgresses: new Map(), intervals: []};
+    profile: {
+        termDefinitions: [],
+        trainingDefinitions: [],
+        terms: [],
+        trainingProgresses: new Map(),
+        intervals: []
     },
-    setLepeatProfile: (profile) => {}
+    setProfile: (profile) => {}
 };
 
 const ProfileContext = React.createContext(initialState);

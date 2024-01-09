@@ -1,15 +1,8 @@
-import React, {useContext, useEffect, useState} from "react";
-import {LepeatProfile} from "../../../model/LepeatProfile";
+import React, {useContext} from "react";
 import ProfileContext from "../../../contexts/ProfileContext";
-import {germanProfile} from "../../../model/DefaultModel";
 
 function Statistics() {
-    const { getLepeatProfile } = useContext(ProfileContext);
-    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
-
-    useEffect(() => {
-        setProfile(getLepeatProfile());
-    }, [getLepeatProfile]);
+    const { profile } = useContext(ProfileContext);
 
     const terms = profile.terms;
     const trainingProgresses = profile.trainingProgresses;

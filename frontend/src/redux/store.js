@@ -1,11 +1,9 @@
 import { legacy_createStore as createStore } from 'redux'
-import {germanProfile} from "../model/DefaultModel";
 import {deserializeProfileFromLocalStorage} from "../services/Persistence";
 
 const initialState = {
     sidebarShow: true,
     theme: 'light',
-    profile: germanProfile
 }
 
 const changeState = (state = initialState, { type, ...rest }) => {

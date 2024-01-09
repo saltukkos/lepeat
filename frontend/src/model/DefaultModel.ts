@@ -176,3 +176,11 @@ export const germanProfile: LepeatProfile = {
     ),
     intervals: [0, 1, 3, 7, 15, 30],
 }
+
+export const emptyProfile: LepeatProfile = {
+    termDefinitions: [],
+    trainingDefinitions: [],
+    terms: [],
+    trainingProgresses: new Map(),
+    intervals: [0]
+}

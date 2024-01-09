@@ -1,13 +1,11 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
 import {useLocation, useNavigate} from "react-router-dom";
-import {LepeatProfile} from "../../model/LepeatProfile";
 import {getTermsToTrain} from "../../services/TrainingStarter";
 import {CButton} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
-import {germanProfile} from "../../model/DefaultModel";
 
 function TrainingSession(
 ) {
@@ -15,13 +13,7 @@ function TrainingSession(
     const location = useLocation();
     const trainingName = location.state.trainingName;
 
-    const { getLepeatProfile } = useContext(ProfileContext);
-    const [profile, setProfile] = useState<LepeatProfile>(germanProfile);
-
-    useEffect(() => {
-        setProfile(getLepeatProfile());
-    }, [getLepeatProfile]);
-
+    const { profile } = useContext(ProfileContext);
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
 
     const termTrainingProgress = React.useMemo(() => trainingDefinition ? getTermsToTrain(profile, trainingDefinition) : undefined, [profile, trainingDefinition]);

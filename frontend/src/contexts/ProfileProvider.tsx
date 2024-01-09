@@ -1,9 +1,9 @@
-import React, {useState, useRef, useEffect, ReactElement, FC, useContext} from 'react';
+import React, {useState, useEffect, ReactElement, FC, useContext} from 'react';
 import ProfileContext from "./ProfileContext";
 import {deserializeProfileFromLocalStorage} from "../services/Persistence";
 import {LepeatProfile} from "../model/LepeatProfile";
 import ToastContext from "./ToastContext";
-import {germanProfile} from "../model/DefaultModel";
+import {emptyProfile, germanProfile} from "../model/DefaultModel";
 
 interface Props extends React.PropsWithChildren {
     children: ReactElement
@@ -11,14 +11,16 @@ interface Props extends React.PropsWithChildren {
 
 const ProfileProvider: FC<Props> = ({children}) => {
     const { showToast } = useContext(ToastContext);
-    const [lepeatProfile, setLepeatProfile] = useState<LepeatProfile | undefined>();
+    const [profile, setProfile] = useState<LepeatProfile>(emptyProfile);
 
     useEffect(() => {
-        try {
-            setLepeatProfile(deserializeProfileFromLocalStorage());
-        } catch (e) {
-            showToast("Could not deserialize profile data");
-            setLepeatProfile(germanProfile); //TODO some default profile data
+        const profileFromLocalStorage = deserializeProfileFromLocalStorage();
+        if (profileFromLocalStorage){
+            setProfile(profileFromLocalStorage);
+        }
+        else {
+            showToast("Could not deserialize profile data, using default");
+            setProfile(germanProfile); //TODO some default profile data
         }
 
         // TODO think on this
@@ -27,13 +29,8 @@ const ProfileProvider: FC<Props> = ({children}) => {
         // }
     }, []);
 
-    const getLepeatProfile = () => {
-        return lepeatProfile!!;
-    }
-
-
     return (
-        <ProfileContext.Provider value={{getLepeatProfile, setLepeatProfile}}>
+        <ProfileContext.Provider value={{profile, setProfile}}>
             {children}
         </ProfileContext.Provider>
     );

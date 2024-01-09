@@ -5,9 +5,11 @@ import {doNeedToTrain} from "./TrainingStarter";
 export function getTrainingStatistics(trainingDefinition: TrainingDefinition, profile: LepeatProfile) {
     const overallStatistics = new Array<number>(profile.intervals.length + 1).fill(0);
     const thisTimeStatistics = new Array<number>(profile.intervals.length + 1).fill(0);
+    let minimalTimeToUpdate = Number.MAX_SAFE_INTEGER;
+   
     const trainingProgress = profile.trainingProgresses.get(trainingDefinition);
     if (!trainingProgress) {
-        return [overallStatistics, thisTimeStatistics];
+        return {overallStatistics, thisTimeStatistics, minimalTimeToUpdate};
     }
 
     const currentTime = Date.now();
@@ -22,10 +24,15 @@ export function getTrainingStatistics(trainingDefinition: TrainingDefinition, pr
         } else {
             const iteration = termProgress?.iterationNumber ?? 0;
             overallStatistics[iteration] += 1;
-            if (doNeedToTrain(termProgress, profile, currentTime))
+            const {doNeed, remainingDelayBeforeStart} = doNeedToTrain(termProgress, profile, currentTime);
+            if (doNeed) {
                 thisTimeStatistics[iteration] += 1;
+            } else {
+                minimalTimeToUpdate = Math.min(minimalTimeToUpdate, remainingDelayBeforeStart);
+            }
+            
         }
     }
 
-    return [overallStatistics, thisTimeStatistics];
+    return {overallStatistics, thisTimeStatistics, minimalTimeToUpdate};
 }

@@ -29,24 +29,32 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
             }
             return termProgress;
         })
-        .filter(progress => doNeedToTrain(progress, profile, currentTime));
+        .filter(progress => doNeedToTrain(progress, profile, currentTime).doNeed);
 }
 
 
-export function doNeedToTrain(progress: TermTrainingProgress, profile: LepeatProfile, currentTime: number) {
-    let lastTrainingDate = progress.lastTrainingDate;
+export function doNeedToTrain(progress: TermTrainingProgress, profile: LepeatProfile, currentTime: number): {
+    doNeed: boolean;
+    remainingDelayBeforeStart: number
+} {
+    const lastTrainingDate = progress.lastTrainingDate;
     if (!lastTrainingDate) {
-        return true;
+        return {doNeed: true, remainingDelayBeforeStart: 0};
     }
 
     let interval = profile.intervals[progress.iterationNumber]; //TODO what to do after the last iteration?
-    if (isDebug)
-    {
+    if (!interval) {
+        return {doNeed: false, remainingDelayBeforeStart: Number.MAX_SAFE_INTEGER};
+    }
+
+    if (isDebug) {
         interval *= 60 * 1000; //interpret as minutes in debug mode
     } else {
         interval *= 24 * 60 * 60 * 1000; //interpret as days in normal mode
     }
 
-    let nextTrainDateForTerm = lastTrainingDate + interval;
-    return nextTrainDateForTerm < currentTime;
+    const nextTrainDateForTerm = lastTrainingDate + interval;
+    const remainingDelayBeforeStart = nextTrainDateForTerm - currentTime;
+    const doNeedTrain = remainingDelayBeforeStart <= 0;
+    return {doNeed: doNeedTrain, remainingDelayBeforeStart};
 }

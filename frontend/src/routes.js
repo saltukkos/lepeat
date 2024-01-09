@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'))
 const AddWords = React.lazy(() => import('./components/newWordsPage/AddNewTermsPage'))
 const EditWords = React.lazy(() => import('./components/editTermsPage/EditTermsPage'))
 const TrainingSession = React.lazy(() => import('./components/training/TrainingSession'))

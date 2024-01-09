@@ -2,7 +2,7 @@ import {LepeatProfile} from "../model/LepeatProfile";
 import {TrainingDefinition} from "../model/TrainingDefinition";
 import {TermTrainingProgress} from "../model/TrainingProgress";
 
-const isDebug = true;
+const isDebug = process.env.REACT_APP_IS_DEBUG === 'true';
 
 export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: TrainingDefinition) {
     let trainingProgress = profile.trainingProgresses.get(trainingDefinition);

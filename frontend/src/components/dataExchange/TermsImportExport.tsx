@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap';
 import {deserializeTerms, serializeTerms} from "../../services/TermsSerializer";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
 
 function TermsImportExport() {
     const { showToast } = useContext(ToastContext)
@@ -17,6 +18,8 @@ function TermsImportExport() {
     const setTermsFromTextBoxData = () => {
         const newTerms = deserializeTerms(textBoxData, profile);
         profile.terms = Array.from(newTerms.values());
+        markProfileDirty(profile);
+        showToast("Words are imported", "success");
     };
 
     const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

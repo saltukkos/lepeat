@@ -1,6 +1,7 @@
 import React, {useContext, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
 
 function EditTermsPage() {
     const { profile } = useContext(ProfileContext);
@@ -32,6 +33,7 @@ function EditTermsPage() {
         }
 
         terms[editableTermIdx].attributeValues = newTermAttributesData
+        markProfileDirty(profile);
         setEditableTermIdx(-1);
     }
 

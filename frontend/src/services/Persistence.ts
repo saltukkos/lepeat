@@ -21,3 +21,6 @@ export function deserializeProfileFromLocalStorage(){
     return germanProfile;
 }
 
+export function markProfileDirty(profile: LepeatProfile) {
+    serializeProfileToLocalStorage(profile); //TODO: more complex logic can be implemented: we can throttle ot write async
+}

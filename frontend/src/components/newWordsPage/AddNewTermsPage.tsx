@@ -2,6 +2,7 @@ import React, {ChangeEvent, useContext, useState} from "react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
 
 function AddNewTermsPage() {
     const { showToast } = useContext(ToastContext)
@@ -36,8 +37,9 @@ function AddNewTermsPage() {
         }
         const maxId = terms.reduce((max, term) => Math.max(max, term.id), 0);
         terms.push({id: maxId + 1, termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData})
-        setInputsData([]);
+        markProfileDirty(profile);
         showToast("Word added", "success")
+        setInputsData([]);
     }
 
     return <div>

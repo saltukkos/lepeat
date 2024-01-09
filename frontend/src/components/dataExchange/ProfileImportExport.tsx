@@ -3,6 +3,7 @@ import {Container} from 'react-bootstrap';
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
 
 function ProfileImportExport() {
     const { profile, setProfile } = useContext(ProfileContext);
@@ -17,9 +18,10 @@ function ProfileImportExport() {
 
     const setProfileFromTextBoxData = () => {
         // assuming setProfile is expecting a string
-        let newProfile = deserializeProfile(textBoxData);
+        const newProfile = deserializeProfile(textBoxData);
         if (newProfile) {
             setProfile(newProfile);
+            markProfileDirty(newProfile);
             showToast("Profile is loaded", "success");
         } else {
             showToast("Can't deserialize profile", "danger");

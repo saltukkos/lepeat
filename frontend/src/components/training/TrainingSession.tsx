@@ -6,6 +6,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {getTermsToTrain} from "../../services/TrainingStarter";
 import {CButton} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
 
 function TrainingSession(
 ) {
@@ -42,13 +43,15 @@ function TrainingSession(
     let answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
 
     const onRightClicked = () => {
-        termTrainingProgress[currentTermIdx].iterationNumber = termTrainingProgress[currentTermIdx].iterationNumber + 1;
+        termTrainingProgress[currentTermIdx].iterationNumber += 1;
         termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
+        markProfileDirty(profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
     const onWrongClicked = () => {
         termTrainingProgress[currentTermIdx].iterationNumber = 0;
         termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
+        markProfileDirty(profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
 

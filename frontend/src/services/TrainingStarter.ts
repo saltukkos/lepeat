@@ -43,7 +43,7 @@ export function doNeedToTrain(progress: TermTrainingProgress, profile: LepeatPro
     }
 
     let interval = profile.intervals[progress.iterationNumber]; //TODO what to do after the last iteration?
-    if (!interval) {
+    if (isNaN(interval)) {
         return {doNeed: false, remainingDelayBeforeStart: Number.MAX_SAFE_INTEGER};
     }
 

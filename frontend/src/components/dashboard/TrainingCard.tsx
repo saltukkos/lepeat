@@ -20,6 +20,7 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
 
     let {overallStatistics, thisTimeStatistics, minimalTimeToUpdate} = getTrainingStatistics(training, profile);
     const termsToRepeat = thisTimeStatistics.slice(1).reduce((sum, value) => sum + value, 0);
+    const allTermsCount = overallStatistics.reduce((sum, num) => sum + num, 0);
 
     minimalTimeToUpdate = Math.max(minimalTimeToUpdate, 10000); // do not update too often
 
@@ -88,7 +89,7 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
                 </CCardHeader>
                 <CCardBody>
                     <CCardTitle>{training.name}</CCardTitle>
-                    <CCardText>You have {printTermWord(overallStatistics[0])} to learn and {printTermWord(termsToRepeat)} to repeat.</CCardText>
+                    <CCardText>You have {printTermWord(thisTimeStatistics[0])} to learn and {printTermWord(termsToRepeat)} to repeat ouf of {allTermsCount}.</CCardText>
                     <CButton color="primary" onClick={() => navigateToTraining(training.name)}>
                         Start training
                     </CButton>

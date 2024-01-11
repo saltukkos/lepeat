@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useContext, useMemo, useState} from "react";
+import React, {FC, useRef, ChangeEvent, useContext, useMemo, useState} from "react";
 import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
@@ -7,6 +7,13 @@ import {getTermsToTrain} from "../../services/TrainingStarter";
 import {CButton, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {markProfileDirty} from "../../services/Persistence";
+import {TermTrainingProgress, TrainingProgress} from "../../model/TrainingProgress";
+
+const MAX_PREV_TERMS_MEMOIZATION = 10;
+
+const UndoButton: FC<{undo: () => void, disabled: boolean, className: string}> = ({undo, disabled, className}) => {
+    return <CButton className={className} color={"info"} onClick={undo} disabled={disabled}>Undo</CButton>
+}
 
 type Order = 'dateAdded' | 'dateAddedReverse' | 'lastTrained' | 'lastTrainedReverse' | 'random';
 
@@ -25,12 +32,13 @@ function TrainingSession() {
 
     const {profile} = useContext(ProfileContext);
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
+    const oldTermProgress = useRef<TermTrainingProgress[]>([]);
 
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
     const [orderObject, setOrderObject] = useState<{ order: Order }>({order: 'dateAdded'});
-    // hack: we wrap Order in a new object to force memo reevaluation since we can change the order in the middle 
-    // of a train, and then we don't want to traverse already trained terms  
-    
+    // hack: we wrap Order in a new object to force memo reevaluation since we can change the order in the middle
+    // of a train, and then we don't want to traverse already trained terms
+
     const termTrainingProgress = useMemo(() => {
         if (trainingDefinition) {
             const termsToTrain = getTermsToTrain(profile, trainingDefinition, trainingType);
@@ -53,7 +61,7 @@ function TrainingSession() {
                 default:
                     return termsToTrain;
             }
-        } 
+        }
         return undefined;
     }, [profile, trainingDefinition, trainingType, orderObject]);
 
@@ -63,11 +71,28 @@ function TrainingSession() {
 
     console.log("terms to train:" + termTrainingProgress.length)
 
+    const undo = () => {
+        let data = oldTermProgress.current;
+        let prevTermProgressData = data.pop();
+        if (!prevTermProgressData) {
+            console.log("Cannot undo on empty memo-data. Do nothing.");
+            return;
+        }
+
+        const prevIdx = currentTermIdx - 1;
+        termTrainingProgress[prevIdx].iterationNumber += prevTermProgressData.iterationNumber;
+        termTrainingProgress[prevIdx].lastTrainingDate = prevTermProgressData.lastTrainingDate;
+        markProfileDirty(profile);
+
+        setCurrentTermIdx((currentValue) => currentValue - 1);
+    }
+
     if (currentTermIdx >= termTrainingProgress.length) {
         return (
             <Container className="page">
                 Finished
                 <CButton color="primary" onClick={() => navigate('/')}>Back to the Dashboard</CButton>
+                <UndoButton className={"mt-3"} undo={undo} disabled={oldTermProgress.current.length <= 0}/>
             </Container>)
     }
 
@@ -80,16 +105,33 @@ function TrainingSession() {
     let answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
 
     const onRightClicked = () => {
+        const previousData = termTrainingProgress[currentTermIdx];
+        memoizeOldProgress(previousData);
+
         termTrainingProgress[currentTermIdx].iterationNumber += 1;
         termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
         markProfileDirty(profile);
+
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
     const onWrongClicked = () => {
+        const oldProgress = termTrainingProgress[currentTermIdx];
+        memoizeOldProgress(oldProgress);
+
         termTrainingProgress[currentTermIdx].iterationNumber = 0;
         termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
         markProfileDirty(profile);
+
         setCurrentTermIdx((currentValue) => currentValue + 1)
+    }
+
+    const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
+        let data = oldTermProgress.current;
+        data.push(termTrainingProgress)
+        if (data.length > MAX_PREV_TERMS_MEMOIZATION) {
+            data.shift();
+        }
+        oldTermProgress.current = data;
     }
 
     const onSkipClicked = () => {
@@ -118,12 +160,9 @@ function TrainingSession() {
                   answer={answer}
                   onRightClicked={onRightClicked}
                   onSkipClicked={onSkipClicked}
-                  onWrongClicked={onWrongClicked}/>
-            {/*<Container className="gap-4 ">*/}
-            {/*    <CButton color={"danger"} onClick={onWrongClicked}>Wrong</CButton>*/}
-            {/*    <CButton color={"info"} onClick={onSkipClicked}>Skip</CButton>*/}
-            {/*    <CButton color={"success"} onClick={onRightClicked}>Right</CButton>*/}
-            {/*</Container>*/}
+                  onWrongClicked={onWrongClicked}
+            />
+            <UndoButton className={"mx-2"} undo={undo} disabled={oldTermProgress.current.length <= 0}/>
         </Container>
     );
 }

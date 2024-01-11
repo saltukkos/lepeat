@@ -4,7 +4,13 @@ import {TermTrainingProgress} from "../model/TrainingProgress";
 
 const isDebug = process.env.REACT_APP_IS_DEBUG === 'true';
 
-export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: TrainingDefinition) {
+export enum TrainingType {
+    OnlyNew = 'onlyNew',
+    OnlyRepeat = 'onlyRepeat',
+    All = 'all'
+}
+
+export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: TrainingDefinition, trainingType: TrainingType) {
     let trainingProgress = profile.trainingProgresses.get(trainingDefinition);
     if (!trainingProgress) {
         trainingProgress = {progress: new Map()};
@@ -28,6 +34,15 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
                 progressForCurrentTraining.set(value, termProgress);
             }
             return termProgress;
+        })
+        .filter(progress => {
+            switch (trainingType) {
+              case TrainingType.OnlyNew:
+                return progress.iterationNumber === 0;
+              case TrainingType.OnlyRepeat:
+                return progress.iterationNumber !== 0;
+            }
+            return true;
         })
         .filter(progress => doNeedToTrain(progress, profile, currentTime).doNeed);
 }

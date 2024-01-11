@@ -6,14 +6,17 @@ import React, {useEffect, useReducer} from "react";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {useNavigate} from "react-router-dom";
+import {TrainingType} from "../../services/TrainingStarter";
+import { formatDistance } from 'date-fns'
 
 
 export function TrainingCard(training: TrainingDefinition, profile: LepeatProfile) {
     const navigate = useNavigate();
-    const navigateToTraining = (name: string) => {
+    const navigateToTraining = (name: string, trainingType: TrainingType) => {
         navigate('/training_session', {
             state: {
                 trainingName: name,
+                trainingType: trainingType
             }
         });
     };
@@ -21,14 +24,17 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
     let {overallStatistics, thisTimeStatistics, minimalTimeToUpdate} = getTrainingStatistics(training, profile);
     const termsToRepeat = thisTimeStatistics.slice(1).reduce((sum, value) => sum + value, 0);
     const allTermsCount = overallStatistics.reduce((sum, num) => sum + num, 0);
-
-    minimalTimeToUpdate = Math.max(minimalTimeToUpdate, 10000); // do not update too often
+    const termsToLearn = thisTimeStatistics[0];
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     useEffect(() => {
         if (minimalTimeToUpdate > 2147483647){ //longer is not available according to the spec
             return () => {};
-        } 
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        minimalTimeToUpdate = Math.max(minimalTimeToUpdate, 10 * 1000); // do not update too often
+        minimalTimeToUpdate = Math.min(minimalTimeToUpdate, 2 * 60 * 5000); // update at least once in 2 minutes to keep "Next training in" up-to-date
 
         const timerId = setTimeout(() => {
             forceUpdate();
@@ -89,12 +95,45 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
                 </CCardHeader>
                 <CCardBody>
                     <CCardTitle>{training.name}</CCardTitle>
-                    <CCardText>You have {printTermWord(thisTimeStatistics[0])} to learn and {printTermWord(termsToRepeat)} to repeat ouf of {allTermsCount}.</CCardText>
-                    <CButton color="primary" onClick={() => navigateToTraining(training.name)}>
-                        Start training
-                    </CButton>
+                    <CCardText>You have {printTermWord(termsToLearn)} to learn and {printTermWord(termsToRepeat)} to repeat ouf of {allTermsCount}.</CCardText>
+
+                    <div className="d-grid gap-2 col-10 mx-auto">
+                        {termsToLearn > 0 && termsToRepeat > 0 ? (
+                            <>
+                                <CButton color="primary"
+                                         onClick={() => navigateToTraining(training.name, TrainingType.All)}>
+                                    Start training
+                                </CButton>
+
+                                <CButton color="primary"
+                                         onClick={() => navigateToTraining(training.name, TrainingType.OnlyNew)}>
+                                    Only learn new terms
+                                </CButton>
+
+                                <CButton color="primary"
+                                         onClick={() => navigateToTraining(training.name, TrainingType.OnlyRepeat)}>
+                                    Only repeat terms
+                                </CButton>
+                            </>
+                        ) : termsToLearn > 0 ? (
+                            <CButton color="primary"
+                                     onClick={() => navigateToTraining(training.name, TrainingType.OnlyNew)}>
+                                Learn new terms
+                            </CButton>
+                        ) : termsToRepeat > 0 ? (
+                            <CButton color="primary"
+                                     onClick={() => navigateToTraining(training.name, TrainingType.OnlyRepeat)}>
+                                Repeat terms
+                            </CButton>
+                        ) : (
+                            <CButton color="primary" disabled>
+                                Next training in {formatDistance(Date.now(), new Date(Date.now() + minimalTimeToUpdate), {includeSeconds: false})}
+                            </CButton>
+                        )}
+
+                    </div>
                 </CCardBody>
             </CCard>
         </CCol>
-    )
+)
 }

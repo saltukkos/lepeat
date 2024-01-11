@@ -4,19 +4,19 @@ import Card from '../card/Card';
 import './wordCheck.scss';
 import {useLocation, useNavigate} from "react-router-dom";
 import {getTermsToTrain} from "../../services/TrainingStarter";
-import {CButton, CButtonGroup} from "@coreui/react";
+import {CButton} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {markProfileDirty} from "../../services/Persistence";
 
 function TrainingSession() {
     const navigate = useNavigate();
     const location = useLocation();
-    const trainingName = location.state.trainingName;
+    const {trainingName, trainingType} = location.state;
 
     const {profile} = useContext(ProfileContext);
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
 
-    const termTrainingProgress = React.useMemo(() => trainingDefinition ? getTermsToTrain(profile, trainingDefinition) : undefined, [profile, trainingDefinition]);
+    const termTrainingProgress = React.useMemo(() => trainingDefinition ? getTermsToTrain(profile, trainingDefinition, trainingType) : undefined, [profile, trainingDefinition, trainingType]);
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
 
     if (!trainingDefinition || !termTrainingProgress) {

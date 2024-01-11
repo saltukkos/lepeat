@@ -24,14 +24,16 @@ function Card({question, answer, onRightClicked, onWrongClicked, onSkipClicked}:
         <CCard>
             <div className="m-2 text-center" onClick={onClick}>
                 <CCardTitle>{mode}</CCardTitle>
-                <CCardText>
+                <CCardText className="m-3">
                     {mode === "QUESTION" ? question : answer}
                 </CCardText>
             </div>
             <CCardFooter>
-                <CButton className="mx-2" color={"danger"} onClick={onWrongClicked}>Wrong</CButton>
-                <CButton className="mx-2" color={"info"} onClick={onSkipClicked}>Skip</CButton>
-                <CButton className="mx-2" color={"success"} onClick={onRightClicked}>Right</CButton>
+                <div className="d-flex justify-content-around gap-3">
+                    <CButton className="col" color={"danger"} onClick={onWrongClicked}>Wrong</CButton>
+                    <CButton className="col" color={"info"} onClick={onSkipClicked}>Skip</CButton>
+                    <CButton className="col" color={"success"} onClick={onRightClicked}>Right</CButton>
+                </div>
             </CCardFooter>
         </CCard>
     )

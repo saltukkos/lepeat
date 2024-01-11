@@ -7,12 +7,12 @@ import {getTermsToTrain} from "../../services/TrainingStarter";
 import {CButton, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {markProfileDirty} from "../../services/Persistence";
-import {TermTrainingProgress, TrainingProgress} from "../../model/TrainingProgress";
+import {TermTrainingProgress} from "../../model/TrainingProgress";
 
 const MAX_PREV_TERMS_MEMOIZATION = 10;
 
-const UndoButton: FC<{undo: () => void, disabled: boolean, className: string}> = ({undo, disabled, className}) => {
-    return <CButton className={className} color={"info"} onClick={undo} disabled={disabled}>Undo</CButton>
+const UndoButton: FC<{undo: () => void, className: string}> = ({undo, className}) => {
+    return <CButton className={className} color={"secondary"} onClick={undo}>Undo</CButton>
 }
 
 type Order = 'dateAdded' | 'dateAddedReverse' | 'lastTrained' | 'lastTrainedReverse' | 'random';
@@ -92,7 +92,7 @@ function TrainingSession() {
             <Container className="page">
                 Finished
                 <CButton color="primary" onClick={() => navigate('/')}>Back to the Dashboard</CButton>
-                <UndoButton className={"mt-3"} undo={undo} disabled={oldTermProgress.current.length <= 0}/>
+                {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2"} undo={undo}/>}
             </Container>)
     }
 
@@ -141,6 +141,7 @@ function TrainingSession() {
     const onChangeOrder = (e : ChangeEvent<HTMLSelectElement>) => {
         setOrderObject({order: e.target.value as Order});
         setCurrentTermIdx(0);
+        oldTermProgress.current.length = 0;
     };
 
     return (
@@ -162,7 +163,7 @@ function TrainingSession() {
                   onSkipClicked={onSkipClicked}
                   onWrongClicked={onWrongClicked}
             />
-            <UndoButton className={"mx-2"} undo={undo} disabled={oldTermProgress.current.length <= 0}/>
+            {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2"} undo={undo}/>}
         </Container>
     );
 }

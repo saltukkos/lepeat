@@ -2,7 +2,7 @@ import {AttributeDefinition} from "./AttributeDefinition";
 import {TermDefinition} from "./TermDefinition";
 import {TermTrainingRule, TrainingDefinition} from "./TrainingDefinition";
 import {Term} from "./Term";
-import {TermTrainingProgress, TrainingProgress} from "./TrainingProgress";
+import {Status, TermTrainingProgress, TrainingProgress} from "./TrainingProgress";
 import {LepeatProfile} from "./LepeatProfile";
 
 export const originalWordAttribute: AttributeDefinition = {
@@ -131,6 +131,8 @@ export const verb5: Term = {
 
 export const translationsTrainingDefinition: TrainingDefinition = {
     name: "Translation training",
+    learningIntervals: [1, 10],
+    repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [germanArticleAttribute, originalWordAttribute],
@@ -145,6 +147,8 @@ export const translationsTrainingDefinition: TrainingDefinition = {
 
 export const articleTrainingDefinition: TrainingDefinition = {
     name: "Article training",
+    learningIntervals: [1, 10],
+    repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
             attributesToShow: [translatedWordAttribute, originalWordAttribute],
@@ -156,13 +160,13 @@ export const articleTrainingDefinition: TrainingDefinition = {
 const translationTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>(
         [
-            [verb5, {term: verb5, iterationNumber: 1, lastTrainingDate: Date.now()}]
+            [verb5, {term: verb5, status: Status.Repetition, iterationNumber: 1, lastTrainingDate: Date.now()}]
         ])
 }
 
 const articlesTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>([
-        [noun5, {term: noun5, iterationNumber: 1, lastTrainingDate: Date.now()}],
+        [noun5, {term: noun5, status: Status.Relearning, iterationNumber: 3, lastTrainingDate: Date.now()}],
     ])
 }
 
@@ -174,7 +178,6 @@ export const germanProfile: LepeatProfile = {
         [[translationsTrainingDefinition, translationTrainingProgress],
             [articleTrainingDefinition, articlesTrainingProgress]]
     ),
-    intervals: [0, 1, 3, 7, 15, 30],
 }
 
 export const emptyProfile: LepeatProfile = {
@@ -182,5 +185,4 @@ export const emptyProfile: LepeatProfile = {
     trainingDefinitions: [],
     terms: [],
     trainingProgresses: new Map(),
-    intervals: [0]
 }

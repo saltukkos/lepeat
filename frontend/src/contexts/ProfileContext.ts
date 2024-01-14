@@ -11,8 +11,7 @@ const initialState : ProfileContextState = {
         termDefinitions: [],
         trainingDefinitions: [],
         terms: [],
-        trainingProgresses: new Map(),
-        intervals: []
+        trainingProgresses: new Map()
     },
     setProfile: (profile) => {}
 };

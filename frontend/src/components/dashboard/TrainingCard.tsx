@@ -6,7 +6,7 @@ import React, {useEffect, useReducer} from "react";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {useNavigate} from "react-router-dom";
-import {TrainingType} from "../../services/TrainingStarter";
+import {TrainingType} from "../../services/TrainingService";
 import { formatDistance } from 'date-fns'
 
 
@@ -51,7 +51,7 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
                 <CCardHeader>
                     <CChartRadar
                         data={{
-                            labels: ['Not started']
+                            labels: ['Learning']
                                 .concat(Array.from(
                                     {length: overallStatistics.length - 1},
                                     (_, i) => `${i + 1} iteration`)),

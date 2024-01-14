@@ -9,6 +9,4 @@ export interface LepeatProfile {
 
     terms: Term[];
     trainingProgresses: Map<TrainingDefinition, TrainingProgress>;
-
-    intervals: number[]; // TODO move inside TrainingDefinition
 }

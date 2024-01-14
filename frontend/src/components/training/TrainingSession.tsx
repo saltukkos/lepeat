@@ -3,10 +3,15 @@ import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
 import {useLocation, useNavigate} from "react-router-dom";
-import {getTermsToTrain} from "../../services/TrainingStarter";
+import {
+    copyTermTrainingProgress,
+    getTermsToTrain,
+    updateTermProgressDontKnown,
+    updateTermProgressKnown,
+    updateTermTrainingProgress
+} from "../../services/TrainingService";
 import {CButton, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
-import {markProfileDirty} from "../../services/Persistence";
 import {TermTrainingProgress} from "../../model/TrainingProgress";
 
 const MAX_PREV_TERMS_MEMOIZATION = 10;
@@ -78,12 +83,8 @@ function TrainingSession() {
             console.log("Cannot undo on empty memo-data. Do nothing.");
             return;
         }
-
-        const prevIdx = currentTermIdx - 1;
-        termTrainingProgress[prevIdx].iterationNumber += prevTermProgressData.iterationNumber;
-        termTrainingProgress[prevIdx].lastTrainingDate = prevTermProgressData.lastTrainingDate;
-        markProfileDirty(profile);
-
+        
+        updateTermTrainingProgress(prevTermProgressData, termTrainingProgress[currentTermIdx - 1], profile);
         setCurrentTermIdx((currentValue) => currentValue - 1);
     }
 
@@ -107,31 +108,24 @@ function TrainingSession() {
     const onRightClicked = () => {
         const previousData = termTrainingProgress[currentTermIdx];
         memoizeOldProgress(previousData);
-
-        termTrainingProgress[currentTermIdx].iterationNumber += 1;
-        termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
-        markProfileDirty(profile);
-
+        
+        updateTermProgressKnown(termTrainingProgress[currentTermIdx], trainingDefinition, profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
     const onWrongClicked = () => {
         const oldProgress = termTrainingProgress[currentTermIdx];
         memoizeOldProgress(oldProgress);
-
-        termTrainingProgress[currentTermIdx].iterationNumber = 0;
-        termTrainingProgress[currentTermIdx].lastTrainingDate = Date.now();
-        markProfileDirty(profile);
-
+        
+        updateTermProgressDontKnown(termTrainingProgress[currentTermIdx], profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
-
+// todo fix undo
     const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
         let data = oldTermProgress.current;
-        data.push(termTrainingProgress)
+        data.push(copyTermTrainingProgress(termTrainingProgress))
         if (data.length > MAX_PREV_TERMS_MEMOIZATION) {
             data.shift();
         }
-        oldTermProgress.current = data;
     }
 
     const onSkipClicked = () => {

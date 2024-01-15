@@ -42,6 +42,7 @@ export const noun1: Term = {
         [originalWordAttribute, "Hund"],
         [translatedWordAttribute, "Собака"],
     ]),
+    isBacklog: true
 }
 
 export const noun2: Term = {
@@ -52,6 +53,7 @@ export const noun2: Term = {
         [originalWordAttribute, "Katze"],
         [translatedWordAttribute, "Кошка"],
     ]),
+    isBacklog: true
 }
 
 export const noun3: Term = {
@@ -62,6 +64,7 @@ export const noun3: Term = {
         [originalWordAttribute, "Buch"],
         [translatedWordAttribute, "Книга"],
     ]),
+    isBacklog: true
 }
 
 export const noun4: Term = {
@@ -72,6 +75,7 @@ export const noun4: Term = {
         [originalWordAttribute, "Tisch"],
         [translatedWordAttribute, "Стол"],
     ]),
+    isBacklog: true
 }
 
 export const noun5: Term = {
@@ -82,6 +86,7 @@ export const noun5: Term = {
         [originalWordAttribute, "Tasche"],
         [translatedWordAttribute, "Сумка"],
     ]),
+    isBacklog: false
 }
 
 export const verb1: Term = {
@@ -91,6 +96,7 @@ export const verb1: Term = {
         [originalWordAttribute, "laufen"],
         [translatedWordAttribute, "бежать"],
     ]),
+    isBacklog: true
 }
 
 export const verb2: Term = {
@@ -100,6 +106,7 @@ export const verb2: Term = {
         [originalWordAttribute, "lesen"],
         [translatedWordAttribute, "читать"],
     ]),
+    isBacklog: true
 }
 
 export const verb3: Term = {
@@ -109,6 +116,7 @@ export const verb3: Term = {
         [originalWordAttribute, "schreiben"],
         [translatedWordAttribute, "писать"],
     ]),
+    isBacklog: true
 }
 
 export const verb4: Term = {
@@ -118,6 +126,7 @@ export const verb4: Term = {
         [originalWordAttribute, "sprechen"],
         [translatedWordAttribute, "говорить"],
     ]),
+    isBacklog: true
 }
 
 export const verb5: Term = {
@@ -127,6 +136,7 @@ export const verb5: Term = {
         [originalWordAttribute, "sehen"],
         [translatedWordAttribute, "видеть"],
     ]),
+    isBacklog: false
 }
 
 export const translationsTrainingDefinition: TrainingDefinition = {

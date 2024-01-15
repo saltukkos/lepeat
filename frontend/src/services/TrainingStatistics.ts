@@ -16,8 +16,9 @@ export function getTrainingStatistics(trainingDefinition: TrainingDefinition, pr
     const currentTime = Date.now();
 
     const progressForCurrentTraining = trainingProgress.progress;
-    // TODO: filter by backlog
-    const matchingTerms = profile.terms.filter(term => trainingDefinition.configuration.has(term.termDefinition));
+    const matchingTerms = profile.terms
+        .filter(t => !t.isBacklog)
+        .filter(term => trainingDefinition.configuration.has(term.termDefinition));
 
     for (const term of matchingTerms) {
         const termProgress = progressForCurrentTraining.get(term);

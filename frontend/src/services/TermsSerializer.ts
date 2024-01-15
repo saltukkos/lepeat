@@ -42,7 +42,8 @@ export function deserializeTerms(data: string, profile: LepeatProfile){
             const term: Term = {
                 id: id,
                 termDefinition: termDefinition,
-                attributeValues: attributeValues
+                attributeValues: attributeValues,
+                isBacklog: true
             };
 
             terms.set(id, term);

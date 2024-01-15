@@ -1,6 +1,7 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
+  cilBriefcase,
   cilChart,
   cilColumns,
   cilEnvelopeLetter,
@@ -18,6 +19,12 @@ const _nav = [
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Backlog',
+    to: '/backlog',
+    icon: <CIcon icon={cilBriefcase} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

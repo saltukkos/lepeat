@@ -1,12 +1,13 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'))
-const AddWords = React.lazy(() => import('./components/newWordsPage/AddNewTermsPage'))
+const AddWords = React.lazy(() => import('./components/addTermPage/AddNewTermsPage'))
 const EditWords = React.lazy(() => import('./components/editTermsPage/EditTermsPage'))
 const TrainingSession = React.lazy(() => import('./components/training/TrainingSession'))
 const Statistics = React.lazy(() => import('./components/statistics/debug/Statistics'))
 const ImportExportWords = React.lazy(() => import('./components/dataExchange/TermsImportExport'))
 const ImportExportProfile = React.lazy(() => import('./components/dataExchange/ProfileImportExport'))
+const BacklogPage = React.lazy(() => import('./backlog/BacklogPage'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/training_session', name: 'Training session', element: TrainingSession },
   { path: '/import_export_words', name: 'Words', element: ImportExportWords},
   { path: '/import_export_profile', name: 'Profile', element: ImportExportProfile},
+  { path: '/backlog', name: 'Profile', element: BacklogPage},
 ]
 
 export default routes

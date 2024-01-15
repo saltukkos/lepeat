@@ -38,6 +38,8 @@ export function deserializeProfile(data: string): LepeatProfile | undefined {
                     }
                 })
             })
+
+            profile.terms.filter(e =>!("isBacklog" in e)).forEach(e => e.isBacklog = false)
         }
         return profile;
     } catch (error) {

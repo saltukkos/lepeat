@@ -119,7 +119,6 @@ function TrainingSession() {
         updateTermProgressDontKnown(termTrainingProgress[currentTermIdx], profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
-// todo fix undo
     const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
         let data = oldTermProgress.current;
         data.push(copyTermTrainingProgress(termTrainingProgress))

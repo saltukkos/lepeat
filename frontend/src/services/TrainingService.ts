@@ -98,6 +98,7 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
     let currentTime = Date.now();
 
     return profile.terms
+        .filter(t => !t.isBacklog)
         .filter(term => trainingDefinition.configuration.has(term.termDefinition))
         .map(value => {
             let termProgress = progressForCurrentTraining.get(value);

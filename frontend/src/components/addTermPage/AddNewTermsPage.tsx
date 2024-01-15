@@ -37,7 +37,7 @@ function AddNewTermsPage() {
             newTermAttributesData.set(selectedTermDefinition.attributes[i], inputsData[i]);
         }
         const maxId = terms.reduce((max, term) => Math.max(max, term.id), 0);
-        terms.push({id: maxId + 1, termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData})
+        terms.push({id: maxId + 1, termDefinition: selectedTermDefinition, attributeValues: newTermAttributesData, isBacklog: true})
         markProfileDirty(profile);
         showToast("Word added", "success")
         setInputsData([]);

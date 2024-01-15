@@ -1,4 +1,4 @@
-import React, {FC, useRef, ChangeEvent, useContext, useMemo, useState} from "react";
+import React, {ChangeEvent, FC, useContext, useMemo, useRef, useState} from "react";
 import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
@@ -7,12 +7,13 @@ import {
     copyTermTrainingProgress,
     getTermsToTrain,
     updateTermProgressDontKnown,
+    updateTermProgressEasy,
     updateTermProgressKnown,
     updateTermTrainingProgress
 } from "../../services/TrainingService";
 import {CButton, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
-import {TermTrainingProgress} from "../../model/TrainingProgress";
+import {Status, TermTrainingProgress} from "../../model/TrainingProgress";
 
 const MAX_PREV_TERMS_MEMOIZATION = 10;
 
@@ -112,6 +113,15 @@ function TrainingSession() {
         updateTermProgressKnown(termTrainingProgress[currentTermIdx], trainingDefinition, profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
+
+    const onEasyClicked = () => {
+        const previousData = termTrainingProgress[currentTermIdx];
+        memoizeOldProgress(previousData);
+
+        updateTermProgressEasy(termTrainingProgress[currentTermIdx], profile);
+        setCurrentTermIdx((currentValue) => currentValue + 1)
+    }
+
     const onWrongClicked = () => {
         const oldProgress = termTrainingProgress[currentTermIdx];
         memoizeOldProgress(oldProgress);
@@ -141,7 +151,7 @@ function TrainingSession() {
         <Container className="page gap-3">
 
             {/* TODO: save the last selection? */}
-            <CInputGroup className="mb-3 flex-grow-0 w-auto">
+            <CInputGroup size="sm" className="mb-3 flex-grow-0 w-auto">
                 <CInputGroupText component="label">Order:</CInputGroupText>
                 <CFormSelect
                     aria-label="Default select example"
@@ -150,13 +160,18 @@ function TrainingSession() {
                 />
             </CInputGroup>
 
-            <Card question={question}
-                  answer={answer}
-                  onRightClicked={onRightClicked}
-                  onSkipClicked={onSkipClicked}
-                  onWrongClicked={onWrongClicked}
-            />
-            {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2"} undo={undo}/>}
+            <div className="d-flex flex-column gap-3 justify-content-center align-items-center">
+
+                <Card question={question} answer={answer} termTrainingProgress={currentTermProgress}/>
+
+                <CButton style={{ width: '10rem' }} color={"danger"} onClick={onWrongClicked}>Wrong</CButton>
+                <CButton style={{ width: '10rem' }} color={"info"} onClick={onSkipClicked}>Skip</CButton>
+                <CButton style={{ width: '10rem' }} color={"success"} onClick={onRightClicked}>Right</CButton>
+
+                {currentTermProgress.status !== Status.Relearning && <CButton style={{width: '10rem'}} color={"success"} onClick={onEasyClicked}>Easy</CButton>}
+
+                {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2 mt-5"} undo={undo}/>}
+            </div>
         </Container>
     );
 }

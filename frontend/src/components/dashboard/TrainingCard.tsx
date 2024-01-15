@@ -34,7 +34,7 @@ export function TrainingCard(training: TrainingDefinition, profile: LepeatProfil
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
         minimalTimeToUpdate = Math.max(minimalTimeToUpdate, 10 * 1000); // do not update too often
-        minimalTimeToUpdate = Math.min(minimalTimeToUpdate, 2 * 60 * 5000); // update at least once in 2 minutes to keep "Next training in" up-to-date
+        minimalTimeToUpdate = Math.min(minimalTimeToUpdate, 2 * 60 * 1000); // update at least once in 2 minutes to keep "Next training in" up-to-date
 
         const timerId = setTimeout(() => {
             forceUpdate();

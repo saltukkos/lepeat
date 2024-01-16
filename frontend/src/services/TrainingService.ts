@@ -30,6 +30,15 @@ export function updateTermProgressEasy(termProgress: TermTrainingProgress, profi
     markProfileDirty(profile);
 }
 
+export function updateTermProgressHard(termProgress: TermTrainingProgress, profile : LepeatProfile) {
+    if (termProgress.status === Status.Relearning){
+        throw new Error("Unexpected `hard` action for relearning step");
+    }
+
+    termProgress.lastTrainingDate = Date.now();
+    markProfileDirty(profile);
+}
+
 export function updateTermProgressKnown(termProgress: TermTrainingProgress, trainingDefinitions: TrainingDefinition,profile : LepeatProfile) {
     const currentIteration = termProgress.iterationNumber;
 

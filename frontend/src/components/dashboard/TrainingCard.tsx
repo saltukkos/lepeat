@@ -1,7 +1,7 @@
 import {getTrainingStatistics} from "../../services/TrainingStatistics";
 import {CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol} from "@coreui/react";
 import {CChartRadar} from "@coreui/react-chartjs";
-import {printTermWord} from "../../services/L18n";
+import {printTermWord} from "../../services/L10n";
 import React, {useEffect, useReducer} from "react";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {LepeatProfile} from "../../model/LepeatProfile";

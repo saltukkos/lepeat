@@ -37,12 +37,14 @@ function Card({question, answer, termTrainingProgress}: CardProps) {
 
             <div className="m-2" onClick={onClick}>
                 <CCardTitle>{mode}</CCardTitle>
-                <CCardText className="m-3">
+                <CCardText className="m-2 d-flex align-items-center justify-content-center" style={{ minHeight: '3rem' }}>
                     {mode === "QUESTION" ? question : answer}
                 </CCardText>
             </div>
-            <CCardFooter className="text-body-secondary">
-                {getIterationsDescription()}
+            <CCardFooter className="text-body-secondary py-1" onClick={onClick}>
+                <small>
+                    {getIterationsDescription()}
+                </small>
             </CCardFooter>
         </CCard>
     )

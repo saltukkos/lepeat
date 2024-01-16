@@ -8,17 +8,23 @@ import {
     getTermsToTrain,
     updateTermProgressDontKnown,
     updateTermProgressEasy,
+    updateTermProgressHard,
     updateTermProgressKnown,
     updateTermTrainingProgress
 } from "../../services/TrainingService";
-import {CButton, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
+import {CButton, CButtonGroup, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {Status, TermTrainingProgress} from "../../model/TrainingProgress";
+import {cilActionUndo, cilChevronDoubleRight} from "@coreui/icons";
+import CIcon from "@coreui/icons-react";
 
 const MAX_PREV_TERMS_MEMOIZATION = 10;
 
 const UndoButton: FC<{undo: () => void, className: string}> = ({undo, className}) => {
-    return <CButton className={className} color={"secondary"} onClick={undo}>Undo</CButton>
+    return <CButton className={className} color={"secondary"} onClick={undo}>
+        <CIcon icon={cilActionUndo} className="me-2"/>
+        Undo
+    </CButton>
 }
 
 type Order = 'dateAdded' | 'dateAddedReverse' | 'lastTrained' | 'lastTrainedReverse' | 'random';
@@ -98,13 +104,15 @@ function TrainingSession() {
             </Container>)
     }
 
-    let currentTermProgress = termTrainingProgress[currentTermIdx];
-    let currentTerm = currentTermProgress.term;
+    const currentTermProgress = termTrainingProgress[currentTermIdx];
+    const currentTerm = currentTermProgress.term;
 
-    let currentTermDefinition = currentTerm.termDefinition;
-    let currentRule = trainingDefinition.configuration.get(currentTermDefinition)!; // TODO think on corner case
-    let question = currentRule.attributesToShow.map(a => currentTerm.attributeValues.get(a)).join(" ");
-    let answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
+    const currentTermDefinition = currentTerm.termDefinition;
+    const currentRule = trainingDefinition.configuration.get(currentTermDefinition)!; // TODO think on corner case
+    const question = currentRule.attributesToShow.map(a => currentTerm.attributeValues.get(a)).join(" ");
+    const answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
+
+    const canShowAdditionalActions = currentTermProgress.status !== Status.Relearning;
 
     const onRightClicked = () => {
         const previousData = termTrainingProgress[currentTermIdx];
@@ -129,6 +137,15 @@ function TrainingSession() {
         updateTermProgressDontKnown(termTrainingProgress[currentTermIdx], profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
+
+    const onHardClicked = () => {
+        const oldProgress = termTrainingProgress[currentTermIdx];
+        memoizeOldProgress(oldProgress);
+
+        updateTermProgressHard(termTrainingProgress[currentTermIdx], profile);
+        setCurrentTermIdx((currentValue) => currentValue + 1)
+    }
+    
     const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
         let data = oldTermProgress.current;
         data.push(copyTermTrainingProgress(termTrainingProgress))
@@ -164,16 +181,32 @@ function TrainingSession() {
 
                 <Card question={question} answer={answer} termTrainingProgress={currentTermProgress}/>
 
-                <CButton style={{ width: '10rem' }} color={"danger"} onClick={onWrongClicked}>Wrong</CButton>
-                <CButton style={{ width: '10rem' }} color={"info"} onClick={onSkipClicked}>Skip</CButton>
-                <CButton style={{ width: '10rem' }} color={"success"} onClick={onRightClicked}>Right</CButton>
+                <div className="d-flex justify-content-between w-100">
+                    <CButtonGroup vertical role="group" aria-label="Vertical button group">
+                        <CButton className="mb-2 py-2" color={"danger"} onClick={onWrongClicked}>
+                            ← Wrong&nbsp;&nbsp;
+                        </CButton>
+                        {canShowAdditionalActions && <CButton className="py-2" color={"danger"} variant={"outline"} onClick={onHardClicked}>Hard</CButton>}
+                    </CButtonGroup>
 
-                {currentTermProgress.status !== Status.Relearning && <CButton style={{width: '10rem'}} color={"success"} onClick={onEasyClicked}>Easy</CButton>}
-
-                {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2 mt-5"} undo={undo}/>}
-            </div>
+                    <CButtonGroup vertical role="group" aria-label="Vertical button group">
+                        <CButton className="mb-2 py-2" color={"success"} onClick={onRightClicked}>
+                            &nbsp;&nbsp;Right →
+                        </CButton>
+                        {canShowAdditionalActions && <CButton className="py-2" color={"success"} variant={"outline"} onClick={onEasyClicked}>Easy</CButton>}
+                    </CButtonGroup>
+                </div>
+                
+                <div className="d-flex flex-column gap-2 mt-5">
+                    <CButton className="px-5 w-100" color={"info"} onClick={onSkipClicked}>
+                        <CIcon icon={cilChevronDoubleRight} className="me-2"/>
+                        Skip
+                    </CButton>
+                    {oldTermProgress.current.length > 0 && <UndoButton className={"px-4 w-100"} undo={undo}/>}
+                </div>
+                </div>
         </Container>
-    );
+);
 }
 
 export default TrainingSession;

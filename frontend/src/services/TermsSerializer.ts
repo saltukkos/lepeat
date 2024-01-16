@@ -26,8 +26,9 @@ export function deserializeTerms(data: string, profile: LepeatProfile){
 
     for (const line of lines) {
         //TODO: handle errors
+        // TODO: import without ID leads to id NaN and strange behaviour
         const values = line.split('\t');
-        const id = +values[0];
+        let id = +values[0];
         const termDefinition = termDefinitions.get(values[1]);
         if (!termDefinition) 
             continue; 

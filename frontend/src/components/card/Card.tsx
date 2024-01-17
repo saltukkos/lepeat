@@ -31,9 +31,7 @@ function Card({question, answer, termTrainingProgress}: CardProps) {
         }
     }    
     return (
-        <CCard 
-            className="text-center"
-            style={{ minWidth: '19rem' }}>
+        <CCard className="text-center w-100">
 
             <div className="m-2" onClick={onClick}>
                 <CCardTitle>{mode}</CCardTitle>

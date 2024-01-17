@@ -12,13 +12,11 @@ import {
     updateTermProgressKnown,
     updateTermTrainingProgress
 } from "../../services/TrainingService";
-import {CButton, CButtonGroup, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
+import {CButton, CButtonGroup, CFormSelect, CInputGroup, CInputGroupText, CProgress} from "@coreui/react";
 import ProfileContext from "../../contexts/ProfileContext";
 import {Status, TermTrainingProgress} from "../../model/TrainingProgress";
-import {cilActionUndo, cilChevronDoubleRight} from "@coreui/icons";
+import {cilActionUndo, cilChevronDoubleLeft, cilChevronDoubleRight} from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
-
-const MAX_PREV_TERMS_MEMOIZATION = 10;
 
 const UndoButton: FC<{undo: () => void, className: string}> = ({undo, className}) => {
     return <CButton className={className} color={"secondary"} onClick={undo}>
@@ -37,6 +35,8 @@ const orderOptions: { label: string; value: Order }[] = [
     {label: "Shuffled", value: 'random'}
 ];
 
+type cardResult = TermTrainingProgress | null;
+
 function TrainingSession() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -44,7 +44,7 @@ function TrainingSession() {
 
     const {profile} = useContext(ProfileContext);
     const trainingDefinition = profile.trainingDefinitions.find(value => value.name === trainingName);
-    const oldTermProgress = useRef<TermTrainingProgress[]>([]);
+    const oldTermProgress = useRef<cardResult[]>([]);
 
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
     const [orderObject, setOrderObject] = useState<{ order: Order }>({order: 'dateAdded'});
@@ -83,25 +83,57 @@ function TrainingSession() {
 
     console.log("terms to train:" + termTrainingProgress.length)
 
-    const undo = () => {
-        let data = oldTermProgress.current;
-        let prevTermProgressData = data.pop();
+    const onUndoClicked = () => {
+        const data = oldTermProgress.current;
+        const prevTermProgressData = data.pop();
         if (!prevTermProgressData) {
             console.log("Cannot undo on empty memo-data. Do nothing.");
             return;
         }
-        
+
         updateTermTrainingProgress(prevTermProgressData, termTrainingProgress[currentTermIdx - 1], profile);
         setCurrentTermIdx((currentValue) => currentValue - 1);
     }
 
+    const onSkipClicked = () => {
+        oldTermProgress.current.push(null)
+        setCurrentTermIdx((currentValue) => currentValue + 1);
+    }
+
+    const onPrevClicked = () => {
+        oldTermProgress.current.pop();
+        setCurrentTermIdx((currentValue) => currentValue - 1);
+    }
+
+    const hasUndo = currentTermIdx > 0 && oldTermProgress.current[currentTermIdx - 1] !== null;
+    
     if (currentTermIdx >= termTrainingProgress.length) {
         return (
             <Container className="page">
-                Finished
-                <CButton color="primary" onClick={() => navigate('/')}>Back to the Dashboard</CButton>
-                {oldTermProgress.current.length > 0 && <UndoButton className={"mx-2"} undo={undo}/>}
-            </Container>)
+                <div className="w-100 d-flex flex-row justify-content-between align-items-center mb-3">
+                    {hasUndo &&
+                        <UndoButton className={"px-4"} undo={onUndoClicked}/>}
+
+                    {!hasUndo &&
+                        <CButton className="px-4" color={"secondary"} onClick={onPrevClicked}
+                                 disabled={currentTermIdx === 0}>
+                            <CIcon icon={cilChevronDoubleLeft} className="me-2"/>
+                            Back
+                        </CButton>
+                    }
+
+                    <div className="text-body-secondary text-center">
+                        {currentTermIdx + 1} / {termTrainingProgress.length}
+                    </div>
+
+                    <CButton className="px-4" color={"info"} onClick={onSkipClicked}
+                             disabled={currentTermIdx === termTrainingProgress.length}>
+                        Skip
+                        <CIcon icon={cilChevronDoubleRight} className="ms-2"/>
+                    </CButton>
+                </div>
+            </Container>
+        )
     }
 
     const currentTermProgress = termTrainingProgress[currentTermIdx];
@@ -117,7 +149,7 @@ function TrainingSession() {
     const onRightClicked = () => {
         const previousData = termTrainingProgress[currentTermIdx];
         memoizeOldProgress(previousData);
-        
+
         updateTermProgressKnown(termTrainingProgress[currentTermIdx], trainingDefinition, profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
@@ -147,15 +179,8 @@ function TrainingSession() {
     }
     
     const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
-        let data = oldTermProgress.current;
+        const data = oldTermProgress.current;
         data.push(copyTermTrainingProgress(termTrainingProgress))
-        if (data.length > MAX_PREV_TERMS_MEMOIZATION) {
-            data.shift();
-        }
-    }
-
-    const onSkipClicked = () => {
-        setCurrentTermIdx((currentValue) => currentValue + 1);
     }
 
     const onChangeOrder = (e : ChangeEvent<HTMLSelectElement>) => {
@@ -165,48 +190,78 @@ function TrainingSession() {
     };
 
     return (
-        <Container className="page gap-3">
+        <div className="container">
+            <div className="row justify-content-center">
+                <div className="col-12 col-md-6 col-lg-5">
 
-            {/* TODO: save the last selection? */}
-            <CInputGroup size="sm" className="mb-3 flex-grow-0 w-auto">
-                <CInputGroupText component="label">Order:</CInputGroupText>
-                <CFormSelect
-                    aria-label="Default select example"
-                    onChange={onChangeOrder}
-                    options={orderOptions}
-                />
-            </CInputGroup>
+                    <div className="d-flex flex-column gap-3 justify-content-center align-items-center">
 
-            <div className="d-flex flex-column gap-3 justify-content-center align-items-center">
+                        <Card question={question} answer={answer} termTrainingProgress={currentTermProgress}/>
 
-                <Card question={question} answer={answer} termTrainingProgress={currentTermProgress}/>
+                        <div className="d-flex justify-content-between w-100">
+                            <CButtonGroup vertical role="group" aria-label="Vertical button group">
+                                <CButton className="mb-2 py-2" color={"danger"} onClick={onWrongClicked}>
+                                    ← Wrong&nbsp;&nbsp;
+                                </CButton>
+                                {canShowAdditionalActions &&
+                                    <CButton className="py-2" color={"danger"} variant={"outline"}
+                                             onClick={onHardClicked}>Hard</CButton>}
+                            </CButtonGroup>
 
-                <div className="d-flex justify-content-between w-100">
-                    <CButtonGroup vertical role="group" aria-label="Vertical button group">
-                        <CButton className="mb-2 py-2" color={"danger"} onClick={onWrongClicked}>
-                            ← Wrong&nbsp;&nbsp;
+                            <CButtonGroup vertical role="group" aria-label="Vertical button group">
+                                <CButton className="mb-2 py-2" color={"success"} onClick={onRightClicked}>
+                                    &nbsp;&nbsp;Right →
+                                </CButton>
+                                {canShowAdditionalActions &&
+                                    <CButton className="py-2" color={"success"} variant={"outline"}
+                                             onClick={onEasyClicked}>Easy</CButton>}
+                            </CButtonGroup>
+                        </div>
+
+                    </div>
+
+                    <div className="my-5 py-5"/>
+
+                    <div className="w-100 d-flex flex-row justify-content-between align-items-center mb-3">
+                        {hasUndo &&
+                            <UndoButton className={"px-4"} undo={onUndoClicked}/>}
+
+                        {!hasUndo &&
+                            <CButton className="px-4" color={"secondary"} onClick={onPrevClicked} disabled={currentTermIdx === 0}>
+                                <CIcon icon={cilChevronDoubleLeft} className="me-2"/>
+                                Back
+                            </CButton>
+                        }
+                        
+                        <div className="text-body-secondary text-center">
+                            {currentTermIdx + 1} / {termTrainingProgress.length}
+                        </div>
+
+                        <CButton className="px-4" color={"info"} onClick={onSkipClicked} disabled={currentTermIdx === termTrainingProgress.length}>
+                            Skip
+                            <CIcon icon={cilChevronDoubleRight} className="ms-2"/>
                         </CButton>
-                        {canShowAdditionalActions && <CButton className="py-2" color={"danger"} variant={"outline"} onClick={onHardClicked}>Hard</CButton>}
-                    </CButtonGroup>
+                    </div>
 
-                    <CButtonGroup vertical role="group" aria-label="Vertical button group">
-                        <CButton className="mb-2 py-2" color={"success"} onClick={onRightClicked}>
-                            &nbsp;&nbsp;Right →
-                        </CButton>
-                        {canShowAdditionalActions && <CButton className="py-2" color={"success"} variant={"outline"} onClick={onEasyClicked}>Easy</CButton>}
-                    </CButtonGroup>
+                    <div className="w-100 text-center">
+                        <CProgress thin className="my-2" color={"primary"}
+                                   value={100 * (currentTermIdx) / termTrainingProgress.length}/>
+
+                    </div>
+
+                    {/* TODO: save the last selection? */}
+                    <CInputGroup size="sm" className="mt-3 flex-grow-0">
+                        <CInputGroupText component="label">Order:</CInputGroupText>
+                        <CFormSelect
+                            onChange={onChangeOrder}
+                            options={orderOptions}
+                        />
+                    </CInputGroup>
+
                 </div>
-                
-                <div className="d-flex flex-column gap-2 mt-5">
-                    <CButton className="px-5 w-100" color={"info"} onClick={onSkipClicked}>
-                        <CIcon icon={cilChevronDoubleRight} className="me-2"/>
-                        Skip
-                    </CButton>
-                    {oldTermProgress.current.length > 0 && <UndoButton className={"px-4 w-100"} undo={undo}/>}
-                </div>
-                </div>
-        </Container>
-);
+            </div>
+        </div>
+    );
 }
 
 export default TrainingSession;

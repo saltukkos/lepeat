@@ -35,7 +35,7 @@ function Card({question, answer, termTrainingProgress}: CardProps) {
 
             <div className="m-2" onClick={onClick}>
                 <CCardTitle>{mode}</CCardTitle>
-                <CCardText className="m-2 d-flex align-items-center justify-content-center" style={{ minHeight: '3rem' }}>
+                <CCardText className="m-2 d-flex align-items-center justify-content-center" style={{ minHeight: '5rem' }}>
                     {mode === "QUESTION" ? question : answer}
                 </CCardText>
             </div>

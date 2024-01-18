@@ -1,5 +1,4 @@
 import React, {ChangeEvent, FC, useContext, useMemo, useRef, useState} from "react";
-import {Container} from "react-bootstrap";
 import Card from '../card/Card';
 import './wordCheck.scss';
 import {useLocation, useNavigate} from "react-router-dom";
@@ -106,11 +105,11 @@ function TrainingSession() {
     }
 
     const hasUndo = currentTermIdx > 0 && oldTermProgress.current[currentTermIdx - 1] !== null;
-    
-    if (currentTermIdx >= termTrainingProgress.length) {
+
+    const renderProgressArea = () => {
         return (
-            <Container className="page">
-                <div className="w-100 d-flex flex-row justify-content-between align-items-center mb-3">
+            <>
+                <div className="d-flex flex-row justify-content-between align-items-center">
                     {hasUndo &&
                         <UndoButton className={"px-4"} undo={onUndoClicked}/>}
 
@@ -123,7 +122,7 @@ function TrainingSession() {
                     }
 
                     <div className="text-body-secondary text-center">
-                        {currentTermIdx + 1} / {termTrainingProgress.length}
+                        {currentTermIdx < termTrainingProgress.length ? `${currentTermIdx + 1} / ${termTrainingProgress.length}` : "Finished"}
                     </div>
 
                     <CButton className="px-4" color={"info"} onClick={onSkipClicked}
@@ -132,7 +131,35 @@ function TrainingSession() {
                         <CIcon icon={cilChevronDoubleRight} className="ms-2"/>
                     </CButton>
                 </div>
-            </Container>
+
+                <div className="w-100 text-center">
+                    <CProgress thin className="my-3" color={"primary"}
+                               value={100 * (currentTermIdx) / termTrainingProgress.length}/>
+
+                </div>
+            </>
+        );
+    }
+    
+    const renderToDashboardButton = () => {
+        return (
+            <div className="text-center">
+                <div className="d-inline-block">
+                    <CButton className="px-4" color={"primary"} onClick={() => navigate("/dashboard")}>
+                        To Dashboard
+                    </CButton>
+                </div>
+            </div>
+        );
+    }
+
+    if (currentTermIdx >= termTrainingProgress.length) {
+        return (
+            <div className="d-flex flex-column h-100">
+                <div>{renderToDashboardButton()}</div>
+                <div className="mt-auto">{renderProgressArea()}</div>
+            </div>
+
         )
     }
 
@@ -165,7 +192,7 @@ function TrainingSession() {
     const onWrongClicked = () => {
         const oldProgress = termTrainingProgress[currentTermIdx];
         memoizeOldProgress(oldProgress);
-        
+
         updateTermProgressDontKnown(termTrainingProgress[currentTermIdx], profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
@@ -177,7 +204,7 @@ function TrainingSession() {
         updateTermProgressHard(termTrainingProgress[currentTermIdx], profile);
         setCurrentTermIdx((currentValue) => currentValue + 1)
     }
-    
+
     const memoizeOldProgress = (termTrainingProgress: TermTrainingProgress) => {
         const data = oldTermProgress.current;
         data.push(copyTermTrainingProgress(termTrainingProgress))
@@ -189,12 +216,26 @@ function TrainingSession() {
         oldTermProgress.current.length = 0;
     };
 
-    return (
-        <div className="container">
+    const renderOrderSelector = () => {
+        return (
+            <CInputGroup size="sm" className="flex-grow-0 mb-2">
+                <CInputGroupText component="label">Order:</CInputGroupText>
+                {/* TODO: save the last selection? */}
+                <CFormSelect
+                    onChange={onChangeOrder}
+                    options={orderOptions}
+                />
+            </CInputGroup>
+        );
+    }
+
+    const renderCardArea = () => {
+        return (
             <div className="row justify-content-center">
                 <div className="col-12 col-md-6 col-lg-5">
-
                     <div className="d-flex flex-column gap-3 justify-content-center align-items-center">
+
+                        {renderOrderSelector()}
 
                         <Card question={question} answer={answer} termTrainingProgress={currentTermProgress}/>
 
@@ -217,49 +258,16 @@ function TrainingSession() {
                                              onClick={onEasyClicked}>Easy</CButton>}
                             </CButtonGroup>
                         </div>
-
                     </div>
-
-                    <div className="my-5 py-5"/>
-
-                    <div className="w-100 d-flex flex-row justify-content-between align-items-center mb-3">
-                        {hasUndo &&
-                            <UndoButton className={"px-4"} undo={onUndoClicked}/>}
-
-                        {!hasUndo &&
-                            <CButton className="px-4" color={"secondary"} onClick={onPrevClicked} disabled={currentTermIdx === 0}>
-                                <CIcon icon={cilChevronDoubleLeft} className="me-2"/>
-                                Back
-                            </CButton>
-                        }
-                        
-                        <div className="text-body-secondary text-center">
-                            {currentTermIdx + 1} / {termTrainingProgress.length}
-                        </div>
-
-                        <CButton className="px-4" color={"info"} onClick={onSkipClicked} disabled={currentTermIdx === termTrainingProgress.length}>
-                            Skip
-                            <CIcon icon={cilChevronDoubleRight} className="ms-2"/>
-                        </CButton>
-                    </div>
-
-                    <div className="w-100 text-center">
-                        <CProgress thin className="my-2" color={"primary"}
-                                   value={100 * (currentTermIdx) / termTrainingProgress.length}/>
-
-                    </div>
-
-                    {/* TODO: save the last selection? */}
-                    <CInputGroup size="sm" className="mt-3 flex-grow-0">
-                        <CInputGroupText component="label">Order:</CInputGroupText>
-                        <CFormSelect
-                            onChange={onChangeOrder}
-                            options={orderOptions}
-                        />
-                    </CInputGroup>
-
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="d-flex flex-column h-100">
+            <div>{renderCardArea()}</div>
+            <div className="mt-auto">{renderProgressArea()}</div>
         </div>
     );
 }

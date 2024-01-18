@@ -46,9 +46,12 @@ function TrainingSession() {
     const oldTermProgress = useRef<cardResult[]>([]);
 
     const [currentTermIdx, setCurrentTermIdx] = useState(0);
-    const [orderObject, setOrderObject] = useState<{ order: Order }>({order: 'dateAdded'});
-    // hack: we wrap Order in a new object to force memo reevaluation since we can change the order in the middle
-    // of a train, and then we don't want to traverse already trained terms
+    const lastSelectedOrderKey = 'lastOrder' + trainingName;
+    const defaultOrder = (localStorage.getItem(lastSelectedOrderKey) as Order) || 'dateAdded';
+    console.log(`get from local storage: ${lastSelectedOrderKey} = ${defaultOrder}`)
+
+    // hack: we wrap Order in a new object to force memo reevaluation since we can change the order in the middle of a training, and then we don't want to traverse already trained terms
+    const [orderObject, setOrderObject] = useState<{ order: Order }>({ order: defaultOrder});
 
     const termTrainingProgress = useMemo(() => {
         if (trainingDefinition) {
@@ -211,7 +214,10 @@ function TrainingSession() {
     }
 
     const onChangeOrder = (e : ChangeEvent<HTMLSelectElement>) => {
-        setOrderObject({order: e.target.value as Order});
+        const newOrder = e.target.value as Order;
+        localStorage.setItem(lastSelectedOrderKey, newOrder);
+        console.log(`set to local storage: ${lastSelectedOrderKey} = ${newOrder}`)
+        setOrderObject({order: newOrder});
         setCurrentTermIdx(0);
         oldTermProgress.current.length = 0;
     };
@@ -220,8 +226,8 @@ function TrainingSession() {
         return (
             <CInputGroup size="sm" className="flex-grow-0 mb-2">
                 <CInputGroupText component="label">Order:</CInputGroupText>
-                {/* TODO: save the last selection? */}
                 <CFormSelect
+                    value={orderObject.order}
                     onChange={onChangeOrder}
                     options={orderOptions}
                 />

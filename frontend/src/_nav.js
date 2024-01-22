@@ -6,7 +6,7 @@ import {
   cilColumns,
   cilEnvelopeLetter,
   cilList,
-  cilPencil,
+  cilPencil, cilPlaylistAdd,
   cilPlus,
   cilSpeedometer,
   cilUser
@@ -31,6 +31,12 @@ const _nav = [
     name: 'Add word',
     to: '/add_words',
     icon: <CIcon icon={cilPlus} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Add Training',
+    to: '/add_training',
+    icon: <CIcon icon={cilPlaylistAdd} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -12,7 +12,12 @@ import {
   CHeaderToggler,
   CNavLink,
   CNavItem,
-  useColorModes, CButton
+  useColorModes,
+  CButton,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {cilCloudDownload, cilContrast, cilMenu, cilMoon, cilSun} from '@coreui/icons'
@@ -20,11 +25,14 @@ import {serializeProfileToLocalStorage} from "../services/Persistence";
 import ToastContext from "../contexts/ToastContext";
 import routes from "../routes";
 import ProfileContext from "../contexts/ProfileContext";
+import GoogleDriveSynchronizer from "./dataExchange/GoogleDriveSynchronizer";
 
 const AppHeader = () => {
   const { showToast } = useContext(ToastContext)
   const { profile } = useContext(ProfileContext);
 
+  const [visible, setVisible] = useState(false)
+  
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
 
@@ -40,11 +48,6 @@ const AppHeader = () => {
 
   const location = useLocation().pathname;
   const currentRoute = routes.find((route) => route.path === location)?.name ?? "";
-
-  function saveProfile() {
-    serializeProfileToLocalStorage(profile);
-    showToast("Profile is saved", "success")
-  }
 
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
@@ -63,7 +66,7 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
-          <CButton onClick={saveProfile}>
+          <CButton onClick={() => setVisible(!visible)}>
             <CIcon icon={cilCloudDownload} size="lg" />
           </CButton>
         </CHeaderNav>
@@ -113,6 +116,21 @@ const AppHeader = () => {
           </CDropdown>
         </CHeaderNav>
       </CContainer>
+
+      <CModal
+          visible={visible}
+          onClose={() => setVisible(false)}
+          aria-labelledby="LiveDemoExampleLabel"
+      >
+        <CModalHeader onClose={() => setVisible(false)}>
+          <CModalTitle id="LiveDemoExampleLabel">Synchronization</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <GoogleDriveSynchronizer/>
+        </CModalBody>
+
+      </CModal>
+
     </CHeader>
   )
 }

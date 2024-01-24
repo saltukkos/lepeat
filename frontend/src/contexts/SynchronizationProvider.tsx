@@ -2,11 +2,19 @@ import {type PropsWithChildren} from "react";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {GoogleDriveProvider} from "./GoogleDriveContext";
 
-//TODO: temp ids, to env after testing
-const clientId = '906996411849-trbbqcl57f5c6vn4hn01eff3hadrahdj.apps.googleusercontent.com';
-const apiKey = 'AIzaSyADFoolzyKbDJ-I5wizJw22jNpt3gkOai4';
+const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID;
+const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+export const synchronizationEnabled = !(!clientId || !apiKey);
 
 export function SynchronizationProvider({children}: PropsWithChildren) {
+    if(!clientId || !apiKey) {
+        return (
+            <>
+                {children}
+            </>
+        );
+    }
+
     return (
         <GoogleOAuthProvider
             clientId={clientId}

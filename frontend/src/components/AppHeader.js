@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -21,16 +21,11 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {cilCloudDownload, cilContrast, cilMenu, cilMoon, cilSun} from '@coreui/icons'
-import {serializeProfileToLocalStorage} from "../services/Persistence";
-import ToastContext from "../contexts/ToastContext";
 import routes from "../routes";
-import ProfileContext from "../contexts/ProfileContext";
 import GoogleDriveSynchronizer from "./dataExchange/GoogleDriveSynchronizer";
+import {synchronizationEnabled} from "../contexts/SynchronizationProvider";
 
 const AppHeader = () => {
-  const { showToast } = useContext(ToastContext)
-  const { profile } = useContext(ProfileContext);
-
   const [visible, setVisible] = useState(false)
   
   const headerRef = useRef()
@@ -126,7 +121,8 @@ const AppHeader = () => {
           <CModalTitle id="LiveDemoExampleLabel">Synchronization</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <GoogleDriveSynchronizer/>
+          {synchronizationEnabled && <GoogleDriveSynchronizer/>}
+          {!synchronizationEnabled && <div className='text-danger'>Provide Google Api Key and OAuth client id to enable synchronization</div>}
         </CModalBody>
 
       </CModal>

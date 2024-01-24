@@ -9,6 +9,11 @@ export interface TrainingDefinition {
 }
 
 export interface TermTrainingRule {
+    questionPattern: string;
+    answerPattern: string;
+}
+
+export interface TermTrainingRuleV1 extends TermTrainingRule {
     attributesToShow: AttributeDefinition[];
     attributesToGuess: AttributeDefinition[];
 }

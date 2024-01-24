@@ -145,12 +145,12 @@ export const translationsTrainingDefinition: TrainingDefinition = {
     repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
-            attributesToShow: [germanArticleAttribute, originalWordAttribute],
-            attributesToGuess: [translatedWordAttribute],
+            questionPattern: "{Article} {Word}",
+            answerPattern: "{Translation}",
         }],
         [germanVerbDefinition, {
-            attributesToShow: [originalWordAttribute],
-            attributesToGuess: [translatedWordAttribute]
+            questionPattern: "{Word}",
+            answerPattern: "{Translation}",
         }],
     ])
 }
@@ -161,8 +161,8 @@ export const articleTrainingDefinition: TrainingDefinition = {
     repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
-            attributesToShow: [translatedWordAttribute, originalWordAttribute],
-            attributesToGuess: [germanArticleAttribute],
+            questionPattern: "{Translation} {Word}",
+            answerPattern: "{Article}",
         }],
     ])
 }

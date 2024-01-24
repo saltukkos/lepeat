@@ -16,6 +16,9 @@ import ProfileContext from "../../contexts/ProfileContext";
 import {Status, TermTrainingProgress} from "../../model/TrainingProgress";
 import {cilActionUndo, cilChevronDoubleLeft, cilChevronDoubleRight} from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
+import {AttributeDefinition} from "../../model/AttributeDefinition";
+import _ from "lodash";
+import {findStringsInCurlyBraces, substituteBraces} from "../../utils/string";
 
 const UndoButton: FC<{undo: () => void, className: string}> = ({undo, className}) => {
     return <CButton className={className} color={"secondary"} onClick={undo}>
@@ -33,6 +36,18 @@ const orderOptions: { label: string; value: Order }[] = [
     {label: "Date last trained: latest first", value: 'lastTrainedReverse'},
     {label: "Shuffled", value: 'random'}
 ];
+
+const prepareString = (pattern: string, attributesData: Map<AttributeDefinition, string>) => {
+    const placeholderAttributes = new Set(findStringsInCurlyBraces(pattern));
+
+    const placeholdersData: any = {};
+    Array.from(attributesData.entries())
+        .filter((v) => placeholderAttributes.has(v[0].name))
+        .forEach(e => placeholdersData[e[0].name] = e[1]);
+
+    const compiled = _.template(substituteBraces(pattern));
+    return compiled(placeholdersData);
+}
 
 type cardResult = TermTrainingProgress | null;
 
@@ -171,8 +186,9 @@ function TrainingSession() {
 
     const currentTermDefinition = currentTerm.termDefinition;
     const currentRule = trainingDefinition.configuration.get(currentTermDefinition)!; // TODO think on corner case
-    const question = currentRule.attributesToShow.map(a => currentTerm.attributeValues.get(a)).join(" ");
-    const answer = currentRule.attributesToGuess.map(a => currentTerm.attributeValues.get(a)).join(" ");
+
+    const question = prepareString(currentRule.questionPattern, currentTerm.attributeValues);
+    const answer = prepareString(currentRule.answerPattern, currentTerm.attributeValues);
 
     const canShowAdditionalActions = currentTermProgress.status !== Status.Relearning;
 

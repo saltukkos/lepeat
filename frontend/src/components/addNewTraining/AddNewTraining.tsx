@@ -3,10 +3,19 @@ import ProfileContext from "../../contexts/ProfileContext";
 import TermTraining from "./TermTraining";
 import {CButton, CFormInput, CInputGroup, CInputGroupText} from "@coreui/react";
 import TrainingIntervals from "./TrainingIntervals";
-import {DEFAULT_LEARNING_INTERVALS, DEFAULT_REPETITION_INTERVALS} from "../../model/TrainingDefinition";
+import {
+    DEFAULT_LEARNING_INTERVALS,
+    DEFAULT_REPETITION_INTERVALS,
+    TermTrainingRule
+} from "../../model/TrainingDefinition";
+import {TermDefinition} from "../../model/TermDefinition";
+import {validateConfiguration, validateTrainingData} from "./validation";
+import ToastContext from "../../contexts/ToastContext";
 
 function AddNewTraining() {
     const {profile} = useContext(ProfileContext);
+    const { showToast } = useContext(ToastContext)
+
     const termDefinitions = profile.termDefinitions;
 
     const [termsTrainingData, setTermsTrainingData] = useState(termDefinitions.map(e => ({
@@ -39,11 +48,6 @@ function AddNewTraining() {
         setTermsTrainingData([...termsTrainingData]);
     }
 
-    const onSaveClicked = () => {
-        console.log(learningIntervals.current)
-        console.log(repetitionIntervals.current)
-    }
-
     const trainingNameChanged = (newTrainingName: string) => {
         setTrainingName(newTrainingName);
     }
@@ -55,9 +59,41 @@ function AddNewTraining() {
         repetitionIntervals.current = intervals
     }
 
+    const onSaveClicked = () => {
+        const validationError = validateTrainingData(profile, trainingName, learningIntervals.current, repetitionIntervals.current);
+
+        if (validationError) {
+            showToast(validationError, "danger");
+            return;
+        }
+
+        const configuration = new Map<TermDefinition, TermTrainingRule>;
+        termsTrainingData.filter(e => e.isEnabled).forEach(e => configuration.set(e.termDefinition, {
+            questionPattern: e.questionString,
+            answerPattern: e.answerString
+        }));
+
+        const configurationError = validateConfiguration(configuration);
+        if (configurationError) {
+            showToast(configurationError, "danger");
+            return;
+        }
+
+        console.log("going to save")
+        console.log({
+            name: trainingName,
+            configuration,
+            learningIntervals: learningIntervals.current,
+            repetitionIntervals: repetitionIntervals.current
+        })
+
+        // profile.trainingDefinitions.push()
+    }
+
     return (
         <div>
-            <CFormInput className="w-50 mb-4" placeholder={"Training name"} onChange={(e) => trainingNameChanged(e.target.value)} value={trainingName}/>
+            <CFormInput className="w-50 mb-4" placeholder={"Training name"}
+                        onChange={(e) => trainingNameChanged(e.target.value)} value={trainingName}/>
             {termsTrainingData.map((e, idx) => {
                 return (
                     <TermTraining
@@ -69,12 +105,15 @@ function AddNewTraining() {
                         answerInputChanged={indexifyFunction(idx, onAnswerStringChanges)}
                         checkBoxClicked={() => changeEnableState(idx)}
                         isEnabled={e.isEnabled}/>
-                )})
+                )
+            })
             }
 
             <div className="d-flex flex-column gap-4">
-                <TrainingIntervals title={"Learning intervals (in minutes)"} intervals={learningIntervals.current} onIntervalsChanges={onLearningIntervalsChanges}/>
-                <TrainingIntervals title={"Repetition intervals (in days)"} intervals={repetitionIntervals.current} onIntervalsChanges={onRepetitionIntervalsChanges}/>
+                <TrainingIntervals title={"Learning intervals (in minutes)"} intervals={learningIntervals.current}
+                                   onIntervalsChanges={onLearningIntervalsChanges}/>
+                <TrainingIntervals title={"Repetition intervals (in days)"} intervals={repetitionIntervals.current}
+                                   onIntervalsChanges={onRepetitionIntervalsChanges}/>
             </div>
 
 

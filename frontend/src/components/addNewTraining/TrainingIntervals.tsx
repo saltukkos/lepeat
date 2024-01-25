@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {CButton, CCardText, CFormInput} from "@coreui/react";
+import {CCardText, CFormInput} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import {cilPlus, cilTrash} from "@coreui/icons";
 
@@ -42,7 +42,7 @@ const TrainingIntervals: FC<Props> = ({title, intervals, onIntervalsChanges}) =>
                     </div>
                 )
             })}
-            <CIcon icon={cilPlus} size="xl" onClick={onAddClicked}/>
+            <CIcon className="mt-1" icon={cilPlus} size="xl" onClick={onAddClicked}/>
         </div>
     )
 }

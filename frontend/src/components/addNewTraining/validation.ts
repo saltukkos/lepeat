@@ -19,12 +19,13 @@ export function validateTrainingData(profile: LepeatProfile, trainingName: strin
     return null;
 }
 
+// TODO add {}} validation
 export function validateConfiguration(configuration: Map<TermDefinition, TermTrainingRule>) {
     if (configuration.size <= 0) {
         return "No training rule is defined";
     }
 
-    Array.from(configuration.entries()).forEach(e => {
+    return Array.from(configuration.entries()).map(e => {
         const attrs = new Set(e[0].attributes.map(e => e.name));
         const placeholderQuestionAttributes = findStringsInCurlyBraces(e[1].questionPattern);
         const placeholderAnswerAttributes = findStringsInCurlyBraces(e[1].answerPattern);
@@ -44,9 +45,9 @@ export function validateConfiguration(configuration: Map<TermDefinition, TermTra
 
         const notExistingAnswerAttributes = placeholderAnswerAttributes.filter(e => !attrs.has(e));
         if (notExistingAnswerAttributes.length > 0) {
-            return `Term ${e[0].name} does not have attribute with name: ${notExistingQuestionAttributes.join(", ")}`
+            return `Term ${e[0].name} does not have attribute with name: ${notExistingAnswerAttributes.join(", ")}`
         }
-    });
 
-    return null;
+        return null
+    }).filter(e => e !== null)[0] ?? null;
 }

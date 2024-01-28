@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from "react";
+import React, {useCallback, useContext, useMemo, useRef, useState} from "react";
 import ProfileContext from "../../contexts/ProfileContext";
 import TermTraining from "./TermTraining";
 import {CButton, CFormInput, CInputGroup, CInputGroupText} from "@coreui/react";
@@ -11,28 +11,35 @@ import {
 import {TermDefinition} from "../../model/TermDefinition";
 import {validateConfiguration, validateTrainingData} from "./validation";
 import ToastContext from "../../contexts/ToastContext";
+import {indexifyFunction} from "../../utils/utils";
+import {markProfileDirty} from "../../services/Persistence";
+
+const getTermsTrainingInitData = (termDefinitions: TermDefinition[]) => termDefinitions.map(e => ({
+    termDefinition: e,
+    questionString: "",
+    answerString: "",
+    isEnabled: true
+}));
 
 function AddNewTraining() {
     const {profile} = useContext(ProfileContext);
-    const { showToast } = useContext(ToastContext)
+    const {showToast} = useContext(ToastContext)
 
     const termDefinitions = profile.termDefinitions;
 
-    const [termsTrainingData, setTermsTrainingData] = useState(termDefinitions.map(e => ({
-        termDefinition: e,
-        questionString: "",
-        answerString: "",
-        isEnabled: true
-    })));
+    const [termsTrainingData, setTermsTrainingData] = useState(getTermsTrainingInitData(termDefinitions));
 
-    const learningIntervals = useRef(DEFAULT_LEARNING_INTERVALS);
-    const repetitionIntervals = useRef(DEFAULT_REPETITION_INTERVALS);
+    const [learningIntervals, setLearningIntervals] = useState(DEFAULT_LEARNING_INTERVALS);
+    const [repetitionIntervals, setRepetitionIntervals] = useState(DEFAULT_REPETITION_INTERVALS);
 
     const [trainingName, setTrainingName] = useState("");
 
-    const indexifyFunction = <Type, >(idx: number, f: (idx: number, value: Type) => void) => {
-        return (value: Type) => f(idx, value)
-    }
+    const setInitState = useCallback(() => {
+        setTrainingName("");
+        setTermsTrainingData(getTermsTrainingInitData(termDefinitions));
+        setLearningIntervals(DEFAULT_LEARNING_INTERVALS)
+        setRepetitionIntervals(DEFAULT_REPETITION_INTERVALS)
+    }, [setTrainingName, setTermsTrainingData]);
 
     const onQuestionStringChanges = (idx: number, value: string) => {
         termsTrainingData[idx].questionString = value;
@@ -53,14 +60,14 @@ function AddNewTraining() {
     }
 
     const onLearningIntervalsChanges = (intervals: number[]) => {
-        learningIntervals.current = intervals
+        setLearningIntervals([...intervals])
     }
     const onRepetitionIntervalsChanges = (intervals: number[]) => {
-        repetitionIntervals.current = intervals
+        setRepetitionIntervals([...intervals])
     }
 
     const onSaveClicked = () => {
-        const validationError = validateTrainingData(profile, trainingName, learningIntervals.current, repetitionIntervals.current);
+        const validationError = validateTrainingData(profile, trainingName, learningIntervals, repetitionIntervals);
 
         if (validationError) {
             showToast(validationError, "danger");
@@ -79,16 +86,22 @@ function AddNewTraining() {
             return;
         }
 
-        console.log("going to save")
-        console.log({
+        profile.trainingDefinitions.push({
             name: trainingName,
-            configuration,
-            learningIntervals: learningIntervals.current,
-            repetitionIntervals: repetitionIntervals.current
-        })
+            configuration: configuration,
+            learningIntervals: learningIntervals,
+            repetitionIntervals: repetitionIntervals
+        });
+        markProfileDirty(profile);
+        showToast("Training successfully saved", "success");
 
-        // profile.trainingDefinitions.push()
+        setInitState();
     }
+
+    console.log(trainingName)
+    console.log(termsTrainingData)
+    console.log(learningIntervals)
+    console.log(repetitionIntervals)
 
     return (
         <div>
@@ -110,9 +123,9 @@ function AddNewTraining() {
             }
 
             <div className="d-flex flex-column gap-4">
-                <TrainingIntervals title={"Learning intervals (in minutes)"} intervals={learningIntervals.current}
+                <TrainingIntervals title={"Learning intervals (in minutes)"} intervals={learningIntervals}
                                    onIntervalsChanges={onLearningIntervalsChanges}/>
-                <TrainingIntervals title={"Repetition intervals (in days)"} intervals={repetitionIntervals.current}
+                <TrainingIntervals title={"Repetition intervals (in days)"} intervals={repetitionIntervals}
                                    onIntervalsChanges={onRepetitionIntervalsChanges}/>
             </div>
 

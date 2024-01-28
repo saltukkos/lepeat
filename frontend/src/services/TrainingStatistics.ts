@@ -1,7 +1,8 @@
 import {TrainingDefinition} from "../model/TrainingDefinition";
 import {LepeatProfile} from "../model/LepeatProfile";
 import {doNeedToTrain} from "./TrainingService";
-import {Status} from "../model/TrainingProgress";
+import {Status, TermTrainingProgress} from "../model/TrainingProgress";
+import {Term} from "../model/Term";
 
 export function getTrainingStatistics(trainingDefinition: TrainingDefinition, profile: LepeatProfile) {
     const overallStatistics = new Array<number>(trainingDefinition.repetitionIntervals.length + 1).fill(0);
@@ -9,13 +10,9 @@ export function getTrainingStatistics(trainingDefinition: TrainingDefinition, pr
     let minimalTimeToUpdate = Number.MAX_SAFE_INTEGER;
 
     const trainingProgress = profile.trainingProgresses.get(trainingDefinition);
-    if (!trainingProgress) {
-        return {overallStatistics, thisTimeStatistics, minimalTimeToUpdate};
-    }
-
     const currentTime = Date.now();
 
-    const progressForCurrentTraining = trainingProgress.progress;
+    const progressForCurrentTraining = trainingProgress?.progress ?? new Map<Term, TermTrainingProgress>();
     const matchingTerms = profile.terms
         .filter(t => !t.isBacklog)
         .filter(term => trainingDefinition.configuration.has(term.termDefinition));

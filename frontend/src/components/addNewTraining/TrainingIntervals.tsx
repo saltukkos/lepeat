@@ -11,30 +11,26 @@ interface Props {
 }
 
 const TrainingIntervals: FC<Props> = ({title, intervals, onIntervalsChanges}) => {
-    const [intervalsToShow, setIntervalsToShow] = useState(intervals);
 
     const intervalChanged = (idx: number, value: string) => {
-        intervalsToShow[idx] = +value;
-        setIntervalsToShow([...intervalsToShow]);
-        onIntervalsChanges(intervalsToShow);
+        intervals[idx] = +value;
+        onIntervalsChanges(intervals);
     }
 
     const onRemoveClicked = (idx: number) => {
-        intervalsToShow.splice(idx, 1);
-        setIntervalsToShow([...intervalsToShow]);
-        onIntervalsChanges(intervalsToShow);
+        intervals.splice(idx, 1);
+        onIntervalsChanges(intervals);
     }
 
     const onAddClicked = () => {
-        intervalsToShow.push(NEW_INTERVAL_DEFAULT_VALUE);
-        setIntervalsToShow([...intervalsToShow]);
-        onIntervalsChanges(intervalsToShow);
+        intervals.push(NEW_INTERVAL_DEFAULT_VALUE);
+        onIntervalsChanges(intervals);
     }
 
     return (
         <div>
             <CCardText className="">{title}</CCardText>
-            {intervalsToShow.map((interval, idx) => {
+            {intervals.map((interval, idx) => {
                 return (
                     <div className="w-25 mb-2 d-flex align-items-center gap-3" key={`interval-${idx}`}>
                         <CFormInput type="number" min={1} onChange={(e) => intervalChanged(idx, e.target.value)} value={interval}/>

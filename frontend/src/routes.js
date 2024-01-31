@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'))
-const AddWords = React.lazy(() => import('./components/addTermPage/AddNewTermsPage'))
 const AddTraining = React.lazy(() => import('./components/addNewTraining/AddNewTraining'))
 const EditWords = React.lazy(() => import('./components/editTermsPage/EditTermsPage'))
 const TrainingSession = React.lazy(() => import('./components/training/TrainingSession'))
@@ -15,7 +14,6 @@ const TermModificationPage = React.lazy(() => import('./components/termModificat
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/add_words', name: 'Add words', element: AddWords },
   { path: '/edit_words', name: 'Edit words', element: EditWords },
   { path: '/statistics', name: 'Statistics', element: Statistics },
   { path: '/training_session', name: 'Training session', element: TrainingSession },

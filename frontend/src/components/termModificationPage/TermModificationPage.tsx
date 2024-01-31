@@ -3,7 +3,15 @@ import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
 import {markProfileDirty} from "../../services/Persistence";
-import {CButton, CFormInput, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
+import {
+    CBreadcrumb,
+    CBreadcrumbItem,
+    CButton,
+    CFormInput,
+    CFormSelect,
+    CInputGroup,
+    CInputGroupText
+} from "@coreui/react";
 import {useNavigate, useParams} from "react-router-dom";
 import {TermDefinition} from "../../model/TermDefinition";
 import {Term} from "../../model/Term";
@@ -107,18 +115,20 @@ function TermModificationPage() {
     }
 
     const onDeleteClicked = () => {
-        console.log("here")
-        console.log(id)
         if (!id) {
             return;
         }
         profile.terms = profile.terms.filter(e => e.id !== +id);
         markProfileDirty(profile)
-        showToast("Word removed")
+        showToast("Word removed", "success")
         navigate(-1)
     }
 
     return isIdCorrect ? (<div>
+        <CBreadcrumb>
+            <CBreadcrumbItem href="#/words">Terms</CBreadcrumbItem>
+            <CBreadcrumbItem active>{isEditMode ? "Edit term" : "Add term"}</CBreadcrumbItem>
+        </CBreadcrumb>
         <TermDefinitionSelection onChangeSelect={onChangeSelect} selectedDefinition={shownTerm.termDefinition}/>
         {shownTerm.termDefinition.attributes.map((attribute, idx) => {
             let data = shownTerm.attributeValues.get(attribute) ?? "";

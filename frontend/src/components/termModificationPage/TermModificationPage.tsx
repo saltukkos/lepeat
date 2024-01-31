@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useContext, useState} from "react";
+import React, {ChangeEvent, FC, useContext, useEffect, useState} from "react";
 import ToastContext from "../../contexts/ToastContext";
 import ProfileContext from "../../contexts/ProfileContext";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
@@ -6,6 +6,7 @@ import {markProfileDirty} from "../../services/Persistence";
 import {CButton, CFormInput, CFormSelect, CInputGroup, CInputGroupText} from "@coreui/react";
 import {useNavigate, useParams} from "react-router-dom";
 import {TermDefinition} from "../../model/TermDefinition";
+import {Term} from "../../model/Term";
 
 const TermDefinitionSelection: FC<{
     onChangeSelect: (e: ChangeEvent<HTMLSelectElement>) => void,
@@ -37,21 +38,33 @@ function getInitTermData(termDefinition: TermDefinition) {
     }
 }
 
+function copyTermData(term: Term) {
+    return {...term, attributeValues: new Map(term.attributeValues)}
+}
+
 function TermModificationPage() {
     const {id} = useParams();
     const navigate = useNavigate();
     const isEditMode = id !== undefined;
 
-    //TODO validate id
-
-    const {showToast} = useContext(ToastContext)
     const {profile} = useContext(ProfileContext);
+    const {showToast} = useContext(ToastContext)
 
     const termDefinitions = profile.termDefinitions;
     const terms = profile.terms;
-    const [shownTerm, setShownTerm] = useState(
-        () => isEditMode ? profile.terms.find(e => e.id === +id)! :
-        getInitTermData(termDefinitions[0]));
+    const [shownTerm, setShownTerm] = useState(getInitTermData(termDefinitions[0]));
+    const [isIdCorrect, setIsIdCorrect] = useState(true);
+
+    useEffect(() => {
+        if (isEditMode) {
+            const selectedTerm = profile.terms.find(e => e.id === +id)
+            if (!selectedTerm) {
+                setIsIdCorrect(false);
+            } else {
+                setShownTerm(copyTermData(selectedTerm))
+            }
+        }
+    }, [])
 
     const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
         setShownTerm({
@@ -91,7 +104,19 @@ function TermModificationPage() {
         }
     }
 
-    return <div>
+    const onDeleteClicked = () => {
+        console.log("here")
+        console.log(id)
+        if (!id) {
+            return;
+        }
+        profile.terms = profile.terms.filter(e => e.id !== +id);
+        markProfileDirty(profile)
+        showToast("Word removed")
+        navigate(-1)
+    }
+
+    return isIdCorrect ? (<div>
         <TermDefinitionSelection onChangeSelect={onChangeSelect} selectedDefinition={shownTerm.termDefinition}/>
         {shownTerm.termDefinition.attributes.map((attribute, idx) => {
             let data = shownTerm.attributeValues.get(attribute) ?? "";
@@ -103,8 +128,11 @@ function TermModificationPage() {
                 </CInputGroup>
             );
         })}
-        <CButton onClick={onSaveClicked} color="primary">Save</CButton>
-    </div>
+        <div className="mt-5 d-flex justify-content-between">
+            <CButton onClick={onSaveClicked} color="primary">Save</CButton>
+            {isEditMode ? <CButton onClick={onDeleteClicked} color="danger">Delete</CButton> : null}
+        </div>
+    </div>) : <div>Id is not correct</div>;
 
 }
 

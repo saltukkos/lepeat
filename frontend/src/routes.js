@@ -24,7 +24,8 @@ const routes = [
   { path: '/backlog', name: 'Profile', element: BacklogPage},
   { path: '/add_training', name: 'Add Training', element: AddTraining},
   { path: '/words', name: 'Words', element: TermsPage},
-  { path: '/edit-word/:id', name: 'Term modification', element: TermModificationPage}
+  { path: '/edit-term/:id', name: 'Term editing', element: TermModificationPage},
+  { path: '/add-term', name: 'Term adding', element: TermModificationPage}
 ]
 
 export default routes

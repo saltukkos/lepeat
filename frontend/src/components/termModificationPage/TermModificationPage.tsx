@@ -101,6 +101,8 @@ function TermModificationPage() {
 
         if (isEditMode) {
             navigate(-1)
+        } else {
+            setShownTerm(getInitTermData(termDefinitions[0]));
         }
     }
 

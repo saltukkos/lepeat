@@ -1,8 +1,9 @@
 import React from "react";
 import { useTable, useGlobalFilter } from "react-table";
-import {CFormInput, CTable, CTableBody, CTableDataCell, CTableHead, CTableRow} from "@coreui/react";
+import {CButton, CFormInput, CTable, CTableBody, CTableDataCell, CTableHead, CTableRow} from "@coreui/react";
+import PropTypes from "prop-types";
 
-export default function Table({ columns, data }) {
+export default function Table({ columns, data, additionalHeaderElements }) {
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setGlobalFilter, state } =
         useTable({ columns, data }, useGlobalFilter);
@@ -11,12 +12,14 @@ export default function Table({ columns, data }) {
 
     return (
         <div>
-            <div className="w-50 mb-3">
+            <div className="w-100 mb-3 d-flex justify-content-between">
                 <CFormInput
+                    className="w-50"
                     type="text"
                     value={globalFilter || ''}
                     onChange={(e) => setGlobalFilter(e.target.value)}
                 />
+                {additionalHeaderElements}
             </div>
             <CTable {...getTableProps()}>
                 <CTableHead>
@@ -50,3 +53,10 @@ export default function Table({ columns, data }) {
         </div>
     )
 }
+
+// Define the prop types
+Table.propTypes = {
+    columns: PropTypes.array.isRequired,
+    data: PropTypes.array.isRequired,
+    additionalHeaderElements: PropTypes.any, // Not marking as .isRequired makes it optional
+};

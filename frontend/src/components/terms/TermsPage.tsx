@@ -5,6 +5,7 @@ import CIcon from "@coreui/icons-react";
 import {cilPencil} from "@coreui/icons";
 import {useNavigate} from "react-router-dom";
 import {Column, Row} from "react-table"
+import {CButton} from "@coreui/react";
 
 interface DataType {
     id_number: number,
@@ -17,7 +18,7 @@ const EditButton: FC<{ row: Row<DataType> }> = ({row}) => {
 
     const handleEdit = () => {
         console.log("Edit button clicked for row:", row.original);
-        navigate(`/edit-word/${row.original.id_number}`)
+        navigate(`/edit-term/${row.original.id_number}`)
     };
 
     return <CIcon icon={cilPencil} onClick={handleEdit}/>;
@@ -25,6 +26,7 @@ const EditButton: FC<{ row: Row<DataType> }> = ({row}) => {
 
 function TermsPage() {
     const {profile} = useContext(ProfileContext);
+    const navigate = useNavigate();
     const terms = profile.terms;
     let columns: Column<DataType>[] = useMemo(() => [
         {
@@ -44,7 +46,16 @@ function TermsPage() {
 
     const data: any[] = terms.map(e => ({'id_number': e.id, 'term': Array.from(e.attributeValues.values()).join('; ')}))
 
-    return <Table columns={columns} data={data}/>
+    const onAddClicked = () => {
+        navigate(`/add-term/`)
+    }
+
+    const addButton = <CButton onClick={onAddClicked} color="info">Add new term</CButton>
+
+    return (<div>
+
+        <Table columns={columns} data={data} additionalHeaderElements={addButton}/>
+    </div>)
 }
 
 export default TermsPage;

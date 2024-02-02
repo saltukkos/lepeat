@@ -15,6 +15,7 @@ import {
 import {useNavigate, useParams} from "react-router-dom";
 import {TermDefinition} from "../../model/TermDefinition";
 import {Term} from "../../model/Term";
+import { v4 as uuidv4 } from "uuid";
 
 const TermDefinitionSelection: FC<{
     onChangeSelect: (e: ChangeEvent<HTMLSelectElement>) => void,
@@ -65,7 +66,7 @@ function TermModificationPage() {
 
     useEffect(() => {
         if (isEditMode) {
-            const selectedTerm = profile.terms.find(e => e.id === +id)
+            const selectedTerm = profile.terms.find(e => e.id === id)
             if (!selectedTerm) {
                 setIsIdCorrect(false);
             } else {
@@ -91,13 +92,12 @@ function TermModificationPage() {
         shownTerm.termDefinition.attributes.forEach(e => newTermAttributesData.set(e, shownTerm.attributeValues.get(e) ?? ""));
 
         if (isEditMode) {
-            const currentWord = terms.find(e => e.id === +id)!;
+            const currentWord = terms.find(e => e.id === id)!;
             currentWord.attributeValues = newTermAttributesData;
             currentWord.termDefinition = shownTerm.termDefinition;
         } else {
-            const maxId = terms.reduce((max, term) => Math.max(max, term.id), 0);
             terms.push({
-                id: maxId + 1,
+                id: uuidv4(),
                 termDefinition: shownTerm.termDefinition,
                 attributeValues: newTermAttributesData,
                 isBacklog: true
@@ -118,7 +118,7 @@ function TermModificationPage() {
         if (!id) {
             return;
         }
-        profile.terms = profile.terms.filter(e => e.id !== +id);
+        profile.terms = profile.terms.filter(e => e.id !== id);
         markProfileDirty(profile)
         showToast("Word removed", "success")
         navigate(-1)

@@ -51,7 +51,7 @@ function Statistics() {
             let termProgress = trainingProgress.progress.get(term);
 
             termData[`training-${idx}-iteration`] = termProgress ? termProgress.iterationNumber : "-"
-            termData[`training-${idx}-time`] = termProgress ? termProgress.lastTrainingDate ?  dateInHhMmDdMmYyyy(termProgress.lastTrainingDate) : '-' : '-';
+            termData[`training-${idx}-time`] = termProgress ? termProgress.lastEditDate ?  dateInHhMmDdMmYyyy(termProgress.lastEditDate) : '-' : '-';
         })
         data.push(termData)
     })

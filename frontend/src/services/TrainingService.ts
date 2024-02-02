@@ -2,6 +2,7 @@ import {LepeatProfile} from "../model/LepeatProfile";
 import {TrainingDefinition} from "../model/TrainingDefinition";
 import {Status, TermTrainingProgress} from "../model/TrainingProgress";
 import {markProfileDirty} from "./Persistence";
+import { v4 as uuidv4 } from "uuid";
 
 const isDebug = process.env.REACT_APP_IS_DEBUG === 'true';
 
@@ -26,7 +27,7 @@ export function updateTermProgressEasy(termProgress: TermTrainingProgress, profi
             throw new Error(`Unknown status: ${termProgress.status}`);
     }
 
-    termProgress.lastTrainingDate = Date.now();
+    termProgress.lastEditDate = Date.now();
     markProfileDirty(profile);
 }
 
@@ -35,7 +36,7 @@ export function updateTermProgressHard(termProgress: TermTrainingProgress, profi
         throw new Error("Unexpected `hard` action for relearning step");
     }
 
-    termProgress.lastTrainingDate = Date.now();
+    termProgress.lastEditDate = Date.now();
     markProfileDirty(profile);
 }
 
@@ -62,7 +63,7 @@ export function updateTermProgressKnown(termProgress: TermTrainingProgress, trai
             throw new Error(`Unknown status: ${termProgress.status}`);
     }
 
-    termProgress.lastTrainingDate = Date.now();
+    termProgress.lastEditDate = Date.now();
     markProfileDirty(profile);
 }
 
@@ -82,7 +83,7 @@ export function updateTermProgressDontKnown(termProgress: TermTrainingProgress, 
             throw new Error(`Unknown status: ${termProgress.status}`);
     }
 
-    termProgress.lastTrainingDate = Date.now();
+    termProgress.lastEditDate = Date.now();
     markProfileDirty(profile);
 }
 
@@ -91,7 +92,7 @@ export function copyTermTrainingProgress(termTrainingProgress: TermTrainingProgr
 }
 export function updateTermTrainingProgress(source : TermTrainingProgress, target: TermTrainingProgress, profile : LepeatProfile) {
     target.status = source.status;
-    target.lastTrainingDate = source.lastTrainingDate;
+    target.lastEditDate = source.lastEditDate;
     target.iterationNumber = source.iterationNumber;
     markProfileDirty(profile);
 }
@@ -113,10 +114,11 @@ export function getTermsToTrain(profile: LepeatProfile, trainingDefinition: Trai
             let termProgress = progressForCurrentTraining.get(value);
             if (!termProgress) {
                 termProgress = {
+                    id: uuidv4(),
                     status: Status.Learning,
                     term: value,
                     iterationNumber: 0,
-                    lastTrainingDate: undefined
+                    lastEditDate: undefined
                 };
 
                 progressForCurrentTraining.set(value, termProgress);
@@ -139,7 +141,7 @@ export function doNeedToTrain(progress: TermTrainingProgress, trainingDefinition
     doNeed: boolean;
     remainingDelayBeforeStart: number
 } {
-    const lastTrainingDate = progress.lastTrainingDate;
+    const lastTrainingDate = progress.lastEditDate;
     if (!lastTrainingDate) {
         return {doNeed: true, remainingDelayBeforeStart: 0};
     }

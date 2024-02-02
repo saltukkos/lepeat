@@ -4,6 +4,8 @@ import {useContext, useState} from "react";
 import ToastContext from "../../contexts/ToastContext";
 import {deserializeProfile, serializeProfile} from "../../services/ProfileSerializer";
 import ProfileContext from "../../contexts/ProfileContext";
+import {markProfileDirty} from "../../services/Persistence";
+import {mergeProfiles} from "../../services/Merger";
 
 function GoogleDriveSynchronizer() {
 
@@ -96,7 +98,7 @@ function GoogleDriveSynchronizer() {
         });
 
         updateFile({id: existingFile.id ?? "", file, metadata})
-            .then(r => showToast("Profile updated", 'success'))
+            .then(r => showToast("Profile is uploaded", 'success'))
             .catch(error => showToast("error updating: " + error, 'danger'));
     };
 
@@ -112,6 +114,36 @@ function GoogleDriveSynchronizer() {
                 }
                 else {
                     setProfile(deserializedProfile)
+                    markProfileDirty(deserializedProfile)
+                    showToast("Profile is updated", 'success')
+                }
+            }            )
+            .catch(error => showToast("error fetching: " + error, 'danger'));
+    };
+
+    const smartMerge = () => {
+        fetchFile<'arraybuffer'>(existingFile) //for some reason, 'text' and 'json' do not work and still return arraybuffer
+            .then(r =>
+            {
+                const decoder = new TextDecoder('utf-8');
+                const text = decoder.decode(new Uint8Array(r.data as ArrayBuffer));
+                const deserializedProfile = deserializeProfile(text);
+
+                if (!deserializedProfile){
+                    showToast("Profile from cloud is invalid", 'danger')
+                }
+                else {
+                    try {
+                        setProfile(mergeProfiles(profile, deserializedProfile))
+                    }
+                    catch (e){
+                        if (e instanceof Error) {
+                            showToast(e.message, "danger");
+                        }
+                        else {
+                            showToast("Can't merge, unknown error", "danger");
+                        }
+                    }
                     showToast("Profile is updated", 'success')
                 }
             }            )
@@ -120,6 +152,7 @@ function GoogleDriveSynchronizer() {
 
     return (
         <div className="d-flex flex-column gap-5">
+            <CButton color="primary" onClick={smartMerge}>Smart merge</CButton>
             <CButton color="primary" onClick={getProfileFromDrive}>Get profile from drive</CButton>
             <CButton color="primary" onClick={uploadProfileToDrive}>Upload profile to drive</CButton>
             <CButton color="danger" onClick={deleteProfileFromDrive}>Delete profile from drive</CButton>

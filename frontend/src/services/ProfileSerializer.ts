@@ -34,7 +34,7 @@ function migrateTrainingRuleData(profile: LepeatProfile) {
                 if (hasOldFields(oldRule)) {
                     const questionPattern = transformToNewFormat(oldRule.attributesToShow)
                     const answerPattern = transformToNewFormat(oldRule.attributesToGuess)
-                    newConfiguration.set(e[0], {questionPattern, answerPattern})
+                    newConfiguration.set(e[0], {id: oldRule.id, lastEditDate: oldRule.lastEditDate, questionPattern, answerPattern})
                     needToUpdate = true;
                 } else {
                     newConfiguration.set(e[0], e[1]);
@@ -65,4 +65,8 @@ export function deserializeProfile(data: string): LepeatProfile | undefined {
         console.error(error);
         return undefined;
     }
+}
+
+export function cloneProfile(profile: LepeatProfile){
+    return deserializeProfile(serializeProfile(profile))!;
 }

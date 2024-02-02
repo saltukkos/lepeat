@@ -13,6 +13,7 @@ import {validateConfiguration, validateTrainingData} from "./validation";
 import ToastContext from "../../contexts/ToastContext";
 import {indexifyFunction} from "../../utils/utils";
 import {markProfileDirty} from "../../services/Persistence";
+import { v4 as uuidv4 } from "uuid";
 
 const getTermsTrainingInitData = (termDefinitions: TermDefinition[]) => termDefinitions.map(e => ({
     termDefinition: e,
@@ -74,8 +75,10 @@ function AddNewTraining() {
             return;
         }
 
-        const configuration = new Map<TermDefinition, TermTrainingRule>;
+        const configuration = new Map<TermDefinition, TermTrainingRule>();
         termsTrainingData.filter(e => e.isEnabled).forEach(e => configuration.set(e.termDefinition, {
+            id: uuidv4(),
+            lastEditDate: Date.now(),
             questionPattern: e.questionString,
             answerPattern: e.answerString
         }));
@@ -87,6 +90,8 @@ function AddNewTraining() {
         }
 
         profile.trainingDefinitions.push({
+            id: uuidv4(),
+            lastEditDate: Date.now(),
             name: trainingName,
             configuration: configuration,
             learningIntervals: learningIntervals,

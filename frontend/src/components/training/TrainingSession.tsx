@@ -79,11 +79,11 @@ function TrainingSession() {
                     return termsToTrain.reverse();
                 case 'lastTrained':
                     return termsToTrain.sort((a, b) =>
-                        (a.lastTrainingDate || Number.MAX_VALUE) - (b.lastTrainingDate || Number.MAX_VALUE)
+                        (a.lastEditDate || Number.MAX_VALUE) - (b.lastEditDate || Number.MAX_VALUE)
                     );
                 case 'lastTrainedReverse':
                     return termsToTrain.sort((a, b) =>
-                        (b.lastTrainingDate || Number.MIN_VALUE) - (a.lastTrainingDate || Number.MIN_VALUE)
+                        (b.lastEditDate || Number.MIN_VALUE) - (a.lastEditDate || Number.MIN_VALUE)
                     );
                 case 'random':
                     return termsToTrain.sort(() => Math.random() - 0.5);

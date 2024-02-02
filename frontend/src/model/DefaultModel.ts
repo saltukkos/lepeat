@@ -6,18 +6,22 @@ import {Status, TermTrainingProgress, TrainingProgress} from "./TrainingProgress
 import {LepeatProfile} from "./LepeatProfile";
 
 export const originalWordAttribute: AttributeDefinition = {
+    id: "fa04b3c8",
     name: "Word",
 };
 
 export const translatedWordAttribute: AttributeDefinition = {
+    id: "bdfefc21",
     name: "Translation",
 };
 
 export const germanArticleAttribute: AttributeDefinition = {
+    id: "55227909",
     name: "Article",
 }
 
 export const germanNounDefinition: TermDefinition = {
+    id: "a7e784c5",
     name: "Noun",
     attributes: [
         germanArticleAttribute,
@@ -27,6 +31,7 @@ export const germanNounDefinition: TermDefinition = {
 }
 
 export const germanVerbDefinition: TermDefinition = {
+    id: "c4f9c3eb",
     name: "Verb",
     attributes: [
         originalWordAttribute,
@@ -35,7 +40,7 @@ export const germanVerbDefinition: TermDefinition = {
 }
 
 export const noun1: Term = {
-    id: 1,
+    id: "e614ee8f",
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -46,7 +51,7 @@ export const noun1: Term = {
 }
 
 export const noun2: Term = {
-    id : 2,
+    id : "4189e22a",
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -57,7 +62,7 @@ export const noun2: Term = {
 }
 
 export const noun3: Term = {
-    id : 3,
+    id : "467a1220",
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "das"],
@@ -68,7 +73,7 @@ export const noun3: Term = {
 }
 
 export const noun4: Term = {
-    id : 4,
+    id : "6d4b2af3",
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "der"],
@@ -79,7 +84,7 @@ export const noun4: Term = {
 }
 
 export const noun5: Term = {
-    id : 5,
+    id : "ec644938",
     termDefinition: germanNounDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [germanArticleAttribute, "die"],
@@ -90,7 +95,7 @@ export const noun5: Term = {
 }
 
 export const verb1: Term = {
-    id : 6,
+    id : "00528e6a",
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "laufen"],
@@ -100,7 +105,7 @@ export const verb1: Term = {
 }
 
 export const verb2: Term = {
-    id : 7,
+    id : "0192c1c1",
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "lesen"],
@@ -110,7 +115,7 @@ export const verb2: Term = {
 }
 
 export const verb3: Term = {
-    id : 8,
+    id : "2bbc594f",
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "schreiben"],
@@ -120,7 +125,7 @@ export const verb3: Term = {
 }
 
 export const verb4: Term = {
-    id : 9,
+    id : "e4a294e1",
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sprechen"],
@@ -130,7 +135,7 @@ export const verb4: Term = {
 }
 
 export const verb5: Term = {
-    id : 10,
+    id : "c2f25cef",
     termDefinition: germanVerbDefinition,
     attributeValues: new Map<AttributeDefinition, string>([
         [originalWordAttribute, "sehen"],
@@ -140,15 +145,18 @@ export const verb5: Term = {
 }
 
 export const translationsTrainingDefinition: TrainingDefinition = {
+    id: "8966a808",
     name: "Translation training",
     learningIntervals: [1, 10],
     repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
+            id: "53245872",
             questionPattern: "{Article} {Word}",
             answerPattern: "{Translation}",
         }],
         [germanVerbDefinition, {
+            id: "9a1ef452",
             questionPattern: "{Word}",
             answerPattern: "{Translation}",
         }],
@@ -156,12 +164,14 @@ export const translationsTrainingDefinition: TrainingDefinition = {
 }
 
 export const articleTrainingDefinition: TrainingDefinition = {
+    id: "465bc3ac",
     name: "Article training",
     learningIntervals: [1, 10],
     repetitionIntervals: [1, 2, 5, 12, 30, 75, 187],
     configuration: new Map<TermDefinition, TermTrainingRule>([
         [germanNounDefinition, {
-            questionPattern: "{Translation} {Word}",
+            id: "c9954d5c",
+            questionPattern: "{Word} ({Translation})",
             answerPattern: "{Article}",
         }],
     ])
@@ -170,13 +180,13 @@ export const articleTrainingDefinition: TrainingDefinition = {
 const translationTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>(
         [
-            [verb5, {term: verb5, status: Status.Repetition, iterationNumber: 1, lastTrainingDate: Date.now()}]
+            [verb5, {id: "1411d053", term: verb5, status: Status.Repetition, iterationNumber: 1, lastEditDate: Date.now()}]
         ])
 }
 
 const articlesTrainingProgress: TrainingProgress = {
     progress: new Map<Term, TermTrainingProgress>([
-        [noun5, {term: noun5, status: Status.Relearning, iterationNumber: 3, lastTrainingDate: Date.now()}],
+        [noun5, {id:"c6c4cecf", term: noun5, status: Status.Relearning, iterationNumber: 3, lastEditDate: Date.now()}],
     ])
 }
 

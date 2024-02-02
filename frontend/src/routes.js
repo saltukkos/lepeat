@@ -1,7 +1,8 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./components/dashboard/Dashboard'))
-const AddTraining = React.lazy(() => import('./components/addNewTraining/AddNewTraining'))
+const TrainingModificationPage = React.lazy(() => import('./components/trainingModificationPage/TrainingModificationPage'))
+const TrainingsPage = React.lazy(() => import('./components/trainingsPage/TrainingsPage'))
 const TrainingSession = React.lazy(() => import('./components/training/TrainingSession'))
 const Statistics = React.lazy(() => import('./components/statistics/debug/Statistics'))
 const ImportExportWords = React.lazy(() => import('./components/dataExchange/TermsImportExport'))
@@ -18,10 +19,12 @@ const routes = [
   { path: '/import_export_words', name: 'Words', element: ImportExportWords},
   { path: '/import_export_profile', name: 'Profile', element: ImportExportProfile},
   { path: '/backlog', name: 'Profile', element: BacklogPage},
-  { path: '/add_training', name: 'Add Training', element: AddTraining},
   { path: '/words', name: 'Words', element: TermsPage},
   { path: '/edit-term/:id', name: 'Term editing', element: TermModificationPage},
-  { path: '/add-term', name: 'Term adding', element: TermModificationPage}
+  { path: '/add-term', name: 'Term adding', element: TermModificationPage},
+  { path: '/trainings', name: 'Words', element: TrainingsPage},
+  { path: '/edit-training/:id', name: 'Term editing', element: TrainingModificationPage},
+  { path: '/add-training', name: 'Term adding', element: TrainingModificationPage},
 ]
 
 export default routes

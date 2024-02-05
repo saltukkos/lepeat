@@ -14,6 +14,7 @@ import {indexifyFunction} from "../../utils/utils";
 import TrainingIntervals from "./TrainingIntervals";
 import {validateConfiguration, validateTrainingData} from "./validation";
 import {markProfileDirty} from "../../services/Persistence";
+import { v4 as uuidv4 } from "uuid";
 
 const getTermsTrainingInitData = (termDefinitions: TermDefinition[]) => termDefinitions.map(e => ({
     termDefinition: e,
@@ -47,7 +48,7 @@ function TrainingModificationPage() {
 
     useEffect(() => {
         if (isEditMode) {
-            const selectedTraining = profile.trainingDefinitions.find(e => e.name === id) //TODO fix e.name => e.id
+            const selectedTraining = profile.trainingDefinitions.find(e => e.id === id)
             if (!selectedTraining) {
                 setIsIdCorrect(false);
             } else {
@@ -92,7 +93,7 @@ function TrainingModificationPage() {
     }
 
     const onSaveClicked = () => {
-        const validationError = validateTrainingData(profile, trainingName, learningIntervals, repetitionIntervals);
+        const validationError = validateTrainingData(profile, trainingName, learningIntervals, repetitionIntervals, id);
 
         if (validationError) {
             showToast(validationError, "danger");
@@ -101,6 +102,8 @@ function TrainingModificationPage() {
 
         const configuration = new Map<TermDefinition, TermTrainingRule>;
         termsTrainingData.filter(e => e.isEnabled).forEach(e => configuration.set(e.termDefinition, {
+            id: uuidv4(),
+            lastEditDate: Date.now(),
             questionPattern: e.questionString,
             answerPattern: e.answerString
         }));
@@ -112,13 +115,16 @@ function TrainingModificationPage() {
         }
 
         if (isEditMode) {
-            const selectedTraining = profile.trainingDefinitions.find(e => e.name === id)! //TODO fix e.name => e.id
+            const selectedTraining = profile.trainingDefinitions.find(e => e.id === id)!
             selectedTraining.name = trainingName;
             selectedTraining.configuration = configuration;
             selectedTraining.learningIntervals = learningIntervals;
             selectedTraining.repetitionIntervals = repetitionIntervals;
+            selectedTraining.lastEditDate = Date.now();
         } else {
             profile.trainingDefinitions.push({
+                id: uuidv4(),
+                lastEditDate: Date.now(),
                 name: trainingName,
                 configuration: configuration,
                 learningIntervals: learningIntervals,
@@ -140,9 +146,9 @@ function TrainingModificationPage() {
         if (!id) {
             return;
         }
-        const selectedTraining = profile.trainingDefinitions.find(e => e.name === id)! //TODO fix e.name => e.id
+        const selectedTraining = profile.trainingDefinitions.find(e => e.id === id)!
         profile.trainingProgresses.delete(selectedTraining);
-        profile.trainingDefinitions = profile.trainingDefinitions.filter(t => t.name !== selectedTraining.name); // TODO use id here
+        profile.trainingDefinitions = profile.trainingDefinitions.filter(t => t.id !== selectedTraining.id);
 
         markProfileDirty(profile)
         showToast("Training removed", "success")

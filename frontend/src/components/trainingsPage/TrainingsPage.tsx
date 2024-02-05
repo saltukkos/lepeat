@@ -8,7 +8,7 @@ import {CButton} from "@coreui/react";
 import Table from "../table/Table";
 
 interface DataType {
-    id_number: string,
+    id: string,
     training: string,
     actions: any
 }
@@ -16,8 +16,7 @@ interface DataType {
 const EditButton: FC<{ row: Row<DataType> }> = ({row}) => {
     const navigate = useNavigate();
     const handleEdit = () => {
-        console.log("Edit button clicked for row:", row.original);
-        navigate(`/edit-training/${row.original.id_number}`)
+        navigate(`/edit-training/${row.original.id}`)
     };
 
     return <CIcon icon={cilPencil} onClick={handleEdit}/>;
@@ -30,10 +29,6 @@ function TrainingsPage() {
 
     let columns: Column<DataType>[] = useMemo(() => [
         {
-            Header: 'ID',
-            accessor: 'id_number',
-        },
-        {
             Header: 'Training',
             accessor: 'training',
         },
@@ -45,9 +40,7 @@ function TrainingsPage() {
     ], []);
 
 
-    // TODO use id
-    const data: any[] = trainings.map(e => ({'id_number': e.name, 'training': e.name}))
-
+    const data: any[] = trainings.map(e => ({'id': e.id, 'training': e.name}))
 
     const onAddClicked = () => {
         navigate(`/add-training/`)

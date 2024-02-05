@@ -1,14 +1,14 @@
 import React from "react";
-import { useTable, useGlobalFilter } from "react-table";
+import {useTable, useGlobalFilter} from "react-table";
 import {CButton, CFormInput, CTable, CTableBody, CTableDataCell, CTableHead, CTableRow} from "@coreui/react";
 import PropTypes from "prop-types";
 
-export default function Table({ columns, data, additionalHeaderElements }) {
+export default function Table({columns, data, additionalHeaderElements}) {
 
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setGlobalFilter, state } =
-        useTable({ columns, data }, useGlobalFilter);
+    const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setGlobalFilter, state} =
+        useTable({columns, data}, useGlobalFilter);
 
-    const { globalFilter } = state;
+    const {globalFilter} = state;
 
     return (
         <div>

@@ -3,11 +3,11 @@ import {LepeatProfile} from "../../model/LepeatProfile";
 import {TermDefinition} from "../../model/TermDefinition";
 import {TermTrainingRule} from "../../model/TrainingDefinition";
 
-export function validateTrainingData(profile: LepeatProfile, trainingName: string, learningIntervals: number[], repetitionIntervals: number[]) {
+export function validateTrainingData(profile: LepeatProfile, trainingName: string, learningIntervals: number[], repetitionIntervals: number[], currentTrainingId?: string) {
     if (isEmptyOrBlank(trainingName)) {
         return "Training name is empty";
     }
-    if (profile.trainingDefinitions.some(e => e.name === trainingName)) {
+    if (profile.trainingDefinitions.some(e => e.name === trainingName && e.id !== currentTrainingId)) {
         return "Training with the same already exists";
     }
     if (learningIntervals.length <= 0) {

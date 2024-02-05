@@ -21,6 +21,9 @@ export function deserializeProfileFromLocalStorage(){
     return germanProfile;
 }
 
-export function markProfileDirty(profile: LepeatProfile) {
+export function markProfileDirty(profile: LepeatProfile, isCloudSynchronized?: boolean) {
+    if (!isCloudSynchronized){
+        // TODO: mark as "not synchronized"
+    }
     serializeProfileToLocalStorage(profile); //TODO: more complex logic can be implemented: we can throttle ot write async
 }

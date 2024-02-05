@@ -150,6 +150,7 @@ function TrainingModificationPage() {
         profile.trainingProgresses.delete(selectedTraining);
         profile.trainingDefinitions = profile.trainingDefinitions.filter(t => t.id !== selectedTraining.id);
 
+        // TODO: make delete synchronization-safe
         markProfileDirty(profile)
         showToast("Training removed", "success")
         navigate(-1)

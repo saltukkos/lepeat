@@ -95,12 +95,14 @@ function TermModificationPage() {
             const currentWord = terms.find(e => e.id === id)!;
             currentWord.attributeValues = newTermAttributesData;
             currentWord.termDefinition = shownTerm.termDefinition;
+            currentWord.lastEditDate = Date.now();
         } else {
             terms.push({
                 id: uuidv4(),
                 termDefinition: shownTerm.termDefinition,
                 attributeValues: newTermAttributesData,
-                isBacklog: true
+                isBacklog: true,
+                lastEditDate: Date.now(),
             })
         }
 
@@ -118,6 +120,8 @@ function TermModificationPage() {
         if (!id) {
             return;
         }
+        
+        // TODO: make delete synchronization-save 
         profile.terms = profile.terms.filter(e => e.id !== id);
         markProfileDirty(profile)
         showToast("Word removed", "success")

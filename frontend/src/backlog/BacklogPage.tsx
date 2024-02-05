@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo, useState} from "react";
+import React, {useContext, useMemo, useState} from "react";
 import ProfileContext from "../contexts/ProfileContext";
 import {
     CButton,
@@ -10,6 +10,7 @@ import {LepeatProfile} from "../model/LepeatProfile";
 import ToastContext from "../contexts/ToastContext";
 import {Column} from "react-table";
 import Table from "../components/table/Table";
+import {MoveToLearn, MoveToLearnWithoutMarkingProfileDirty} from "../services/TermsEditing";
 
 const getBacklogTerms = (profile: LepeatProfile) => {
     return profile.terms.map((e, idx) => ({
@@ -48,6 +49,7 @@ function BacklogPage() {
     const moveToLearn = (id: string) => {
         const term = profile.terms.find(e => e.id === id);
         if (term) {
+            MoveToLearn(term, profile);
             term.isBacklog = false;
             markProfileDirty(profile);
             setTermsToRender(getBacklogTerms(profile))
@@ -55,7 +57,7 @@ function BacklogPage() {
     }
 
     const moveAllToLearn = () => {
-        termsToRender.forEach(t => profile.terms[t.idx].isBacklog = false);
+        termsToRender.forEach(t => MoveToLearnWithoutMarkingProfileDirty(profile.terms[t.idx]));
         markProfileDirty(profile);
         setTermsToRender(getBacklogTerms(profile));
     }
@@ -71,7 +73,7 @@ function BacklogPage() {
             return;
         }
 
-        termsToRender.slice(0, termToLearnCount).forEach(t => profile.terms[t.idx].isBacklog = false);
+        termsToRender.slice(0, termToLearnCount).forEach(t => MoveToLearnWithoutMarkingProfileDirty(profile.terms[t.idx]));
         markProfileDirty(profile);
         setTermsToRender(getBacklogTerms(profile));
     }

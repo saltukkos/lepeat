@@ -3,11 +3,13 @@ import {MergeableEntity} from "../model/MergeableEntity";
 import { v4 as uuidv4 } from "uuid";
 
 export function migrateV2(profile: LepeatProfile) {
-    function ensureIdExists(entity: MergeableEntity)
-    {
-        if (!entity.id){
+    function ensureIdExists(entity: MergeableEntity) {
+        if (!entity.id) {
             entity.id = uuidv4();
-            console.log(`created id for entity ${entity}`)
+            console.log(`created id for entity ${entity}`);
+        } else if (typeof (entity.id as any) === 'number') {
+            entity.id = String(entity.id);
+            console.log(`converted id of entity ${entity}`);
         }
     }
 

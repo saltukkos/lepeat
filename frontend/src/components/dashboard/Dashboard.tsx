@@ -9,9 +9,8 @@ const Dashboard = () => {
   return (
     <>
       <CRow className="mb-4" xs={{ gutter: 4 }}>
-        {profile.trainingDefinitions.map((training, index) => {
-            //TODO: to normal component
-          return TrainingCard(training, profile);
+        {profile.trainingDefinitions.map((training) => {
+            return <TrainingCard training={training} profile={profile} key={training.id} />
         })}
       </CRow>
     </>

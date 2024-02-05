@@ -2,7 +2,7 @@ import {getTrainingStatistics} from "../../services/TrainingStatistics";
 import {CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol} from "@coreui/react";
 import {CChartRadar} from "@coreui/react-chartjs";
 import {printTermWord} from "../../services/L10n";
-import React, {useEffect, useReducer} from "react";
+import React, {FC, useEffect, useReducer} from "react";
 import {TrainingDefinition} from "../../model/TrainingDefinition";
 import {LepeatProfile} from "../../model/LepeatProfile";
 import {useNavigate} from "react-router-dom";
@@ -10,7 +10,7 @@ import {TrainingType} from "../../services/TrainingService";
 import { formatDistance } from 'date-fns'
 
 
-export function TrainingCard(training: TrainingDefinition, profile: LepeatProfile) {
+export const TrainingCard : FC<{training: TrainingDefinition, profile: LepeatProfile}> = ({training, profile}) => {
     const navigate = useNavigate();
     const navigateToTraining = (name: string, trainingType: TrainingType) => {
         navigate('/training_session', {

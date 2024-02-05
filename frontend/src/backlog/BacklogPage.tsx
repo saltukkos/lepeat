@@ -1,17 +1,15 @@
-import React, {useContext, useState} from "react";
+import React, {FC, useContext, useMemo, useState} from "react";
 import ProfileContext from "../contexts/ProfileContext";
 import {
     CButton,
     CFormInput,
     CInputGroup, CInputGroupText,
-    CTable,
-    CTableBody,
-    CTableDataCell,
-    CTableRow
 } from "@coreui/react";
 import {markProfileDirty} from "../services/Persistence";
 import {LepeatProfile} from "../model/LepeatProfile";
 import ToastContext from "../contexts/ToastContext";
+import {Column} from "react-table";
+import Table from "../components/table/Table";
 
 const getBacklogTerms = (profile: LepeatProfile) => {
     return profile.terms.map((e, idx) => ({
@@ -19,17 +17,41 @@ const getBacklogTerms = (profile: LepeatProfile) => {
         idx
     })).filter(e => e.isBacklog)
 }
+
+interface DataType {
+    id: string,
+    word: string,
+    actions: any
+}
+
+
 function BacklogPage() {
-    const { showToast } = useContext(ToastContext)
+    const {showToast} = useContext(ToastContext)
     const {profile} = useContext(ProfileContext);
     const [termsToRender, setTermsToRender] = useState(getBacklogTerms(profile))
     const [termToLearnCount, setTermToLearnCount] = useState(Math.min(30, termsToRender.length));
 
-    const moveToLearn = (idx: number) => {
-        const term = profile.terms[idx];
-        term.isBacklog = false;
-        markProfileDirty(profile);
-        setTermsToRender(getBacklogTerms(profile))
+    let columns: Column<DataType>[] = useMemo(() => [
+        {
+            Header: 'Word',
+            accessor: 'word',
+        },
+        {
+            Header: 'Action',
+            accessor: 'actions',
+            Cell: ({row}) =>
+                <CButton className="mx-1" color={"success"}
+                         onClick={() => moveToLearn(row.original.id)}>To Learn</CButton>,
+        }
+    ], []);
+
+    const moveToLearn = (id: string) => {
+        const term = profile.terms.find(e => e.id === id);
+        if (term) {
+            term.isBacklog = false;
+            markProfileDirty(profile);
+            setTermsToRender(getBacklogTerms(profile))
+        }
     }
 
     const moveAllToLearn = () => {
@@ -58,28 +80,24 @@ function BacklogPage() {
         setTermToLearnCount(+value);
     }
 
+    const data = termsToRender.map(e => ({
+        id: e.id,
+        word: Array.from(e.attributeValues.values()).join("; ")
+    }));
+
+    const header = <>
+        <CButton onClick={moveAllToLearn} color="primary">Learn all terms</CButton>
+        <CInputGroup className="w-25">
+            <CInputGroupText id="inputGroup-sizing-default">Learn</CInputGroupText>
+            <CFormInput type="number" min={0} max={termsToRender.length} id={"termsToLearnCountInput"}
+                        value={termToLearnCount} aria-describedby="basic-addon3"
+                        onChange={(e) => onInputChange(e.target.value)}/>
+            <CButton color="primary" onClick={moveNFirstToLearn}>First terms</CButton>
+        </CInputGroup></>
+
     return (
         <>
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <CButton onClick={moveAllToLearn} color="primary">Learn all terms</CButton>
-                <CInputGroup className="w-25" >
-                    <CInputGroupText id="inputGroup-sizing-default">Learn</CInputGroupText>
-                    <CFormInput type="number" min={0} max={termsToRender.length} id={"termsToLearnCountInput"} value={termToLearnCount} aria-describedby="basic-addon3" onChange={(e) => onInputChange(e.target.value)}/>
-                    <CButton color="primary" onClick={moveNFirstToLearn}>First terms</CButton>
-                </CInputGroup>
-            </div>
-            <CTable>
-                <CTableBody>
-                    {termsToRender.map((t, idx) =>
-                        <CTableRow key={`term-${idx}`} color={idx % 2 == 0 ? "light" : ""}>
-                            <CTableDataCell
-                                className="w-75">{Array.from(t.attributeValues.values()).join("; ")}</CTableDataCell>
-                            <CTableDataCell><CButton className="mx-1" color={"success"}
-                                                     onClick={() => moveToLearn(t.idx)}>To
-                                Learn</CButton></CTableDataCell>
-                        </CTableRow>)}
-                </CTableBody>
-            </CTable>
+            <Table data={data} columns={columns} additionalHeaderElements={header}/>
         </>
 
     )

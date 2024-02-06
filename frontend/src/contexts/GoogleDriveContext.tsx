@@ -3,9 +3,12 @@
  * https://github.com/DigitalNaut/Geomaniac
  * Original license can be found at:
  * https://github.com/DigitalNaut/Geomaniac/blob/a169c2602971844c44198bd2ece34f628ec41484/LICENSE
+ *
+ * Modifications:
+ * - Added token persistence to local storage
  */
 
-import { type PropsWithChildren, useState, createContext, useContext } from "react";
+import {type PropsWithChildren, useState, createContext, useContext, useEffect} from "react";
 import { type NonOAuthError, type TokenResponse, useGoogleLogin, hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import axios, { type AxiosRequestConfig, type AxiosResponse, type ResponseType } from "axios";
 
@@ -80,6 +83,9 @@ const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 const DRIVE_API_URL = "https://www.googleapis.com/drive/v3/files";
 const DRIVE_API_UPLOAD_URL = "https://www.googleapis.com/upload/drive/v3/files";
 
+const persistedTokensKey = "userDriveTokens";
+const tokenExpirationDateKey = "tokensExpirationDate";
+
 /**
  * Provides a Google Drive API context for child components. Children components can access the
  * Google Drive API functionality by calling methods on the `googleDriveContext` object.
@@ -101,6 +107,30 @@ export function GoogleDriveProvider({
   const [tokensExpirationDate, setTokensExpirationDate] = useState<Date>();
   const [error, setError] = useState<Error | NonOAuthError | null>(null);
 
+  useEffect(() => {
+    if (!isDriveLoaded) {
+      return;
+    }
+
+    const persistedTokens = localStorage.getItem(persistedTokensKey);
+    const persistedExpirationDate = localStorage.getItem(tokenExpirationDateKey);
+    if (persistedTokens && persistedExpirationDate) {
+      const tokens = JSON.parse(persistedTokens) as TokenResponse;
+      const expirationDate = new Date(JSON.parse(persistedExpirationDate));
+
+      // If the token has not expired, restore the tokens and permissions
+      if (new Date() <= expirationDate) {
+        setUserTokens(tokens);
+        setHasAccess(hasGrantedAnyScopeGoogle(tokens, scope));
+        setTokensExpirationDate(expirationDate);
+      } else {
+        // Clear the expired tokens from local storage
+        localStorage.removeItem(persistedTokensKey);
+        localStorage.removeItem(tokenExpirationDateKey);
+      }
+    }
+  }, [isDriveLoaded]);
+  
   async function initGapiClient() {
     try {
       await gapi.client.init({
@@ -122,14 +152,23 @@ export function GoogleDriveProvider({
   };
 
   function setTokensAndAccess(newTokens: TokenResponse) {
-    setTokensExpirationDate(new Date(Date.now() + newTokens.expires_in * 1000));
+    const expirationDate = new Date(Date.now() + newTokens.expires_in * 1000);
+    setTokensExpirationDate(expirationDate);
     setUserTokens(newTokens);
     setHasAccess(hasGrantedAnyScopeGoogle(newTokens, scope));
+
+    // Store tokens and expiration date in local storage
+    localStorage.setItem(persistedTokensKey, JSON.stringify(newTokens));
+    localStorage.setItem(tokenExpirationDateKey, JSON.stringify(expirationDate));
   }
 
   function clearTokensAndAccess() {
     setUserTokens(undefined);
     setHasAccess(false);
+
+    // Clear tokens from local storage
+    localStorage.removeItem(persistedTokensKey);
+    localStorage.removeItem(tokenExpirationDateKey);
   }
 
   const initDriveImplicitFlow = useGoogleLogin({

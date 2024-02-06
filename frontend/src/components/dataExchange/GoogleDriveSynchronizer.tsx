@@ -12,9 +12,9 @@ function GoogleDriveSynchronizer() {
     const { profile, setProfile } = useContext(ProfileContext);
     const { showToast } = useContext(ToastContext)
     const {
-        hasDriveAccess, requestDriveAccess,
+        hasDriveAccess, requestDriveAccess, disconnectDrive,
         isDriveLoaded, isDriveAuthorizing, error,
-        fetchFileList, fetchFile, uploadFile, deleteFile
+        fetchFileList, fetchFile, uploadFile, updateFile, deleteFile
     } = useGoogleDrive();
 
     const [existingFile, setExistingFile] = useState<gapi.client.drive.File | "no file">();
@@ -110,6 +110,14 @@ function GoogleDriveSynchronizer() {
                         const mergedProfile = mergeProfiles(profile, deserializedProfile);
                         setProfile(mergedProfile);
                         markProfileDirty(mergedProfile, true);
+                        
+                        const updatedFile = new File([serializeProfile(profile)], "profile.json", {
+                            type: "text/plain",
+                        });
+
+                        updateFile({id: existingFile.id ?? "", file: updatedFile, metadata})
+                            .then(r => showToast("Profile is synchronized", 'success'))
+                            .catch(error => showToast("Local profile is updated, but can't upload result to Drive: " + error, 'danger'));
                     }
                     catch (e){
                         if (e instanceof Error) {
@@ -119,16 +127,16 @@ function GoogleDriveSynchronizer() {
                             showToast("Can't merge, unknown error", "danger");
                         }
                     }
-                    showToast("Profile is updated", 'success')
                 }
-            }            )
+            })
             .catch(error => showToast("error fetching: " + error, 'danger'));
     };
 
     return (
         <div className="d-flex flex-column gap-5">
             <CButton color="primary" onClick={smartMerge}>Synchronize data</CButton>
-            <CButton className="small" color="danger" onClick={deleteProfileFromDrive}>Delete profile from drive</CButton>
+            <CButton color="secondary" onClick={disconnectDrive}>Log out</CButton>
+            <CButton color="danger" onClick={deleteProfileFromDrive}>Delete profile from drive</CButton>
         </div>
     );
 }

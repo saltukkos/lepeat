@@ -19,6 +19,7 @@ import CIcon from "@coreui/icons-react";
 import {AttributeDefinition} from "../../model/AttributeDefinition";
 import _ from "lodash";
 import {findStringsInCurlyBraces, substituteBraces} from "../../utils/string";
+import {shuffle} from "../../utils/shuffle";
 
 const UndoButton: FC<{undo: () => void, className: string}> = ({undo, className}) => {
     return <CButton className={className} color={"secondary"} onClick={undo}>
@@ -86,7 +87,7 @@ function TrainingSession() {
                         (b.lastEditDate || Number.MIN_VALUE) - (a.lastEditDate || Number.MIN_VALUE)
                     );
                 case 'random':
-                    return termsToTrain.sort(() => Math.random() - 0.5);
+                    return shuffle(termsToTrain);
                 default:
                     return termsToTrain;
             }
@@ -98,13 +99,11 @@ function TrainingSession() {
         return ("Unknown training");
     }
 
-    console.log("terms to train:" + termTrainingProgress.length)
-
     const onUndoClicked = () => {
         const data = oldTermProgress.current;
         const prevTermProgressData = data.pop();
         if (!prevTermProgressData) {
-            console.log("Cannot undo on empty memo-data. Do nothing.");
+            console.error("Cannot undo on empty memo-data. Do nothing.");
             return;
         }
 
